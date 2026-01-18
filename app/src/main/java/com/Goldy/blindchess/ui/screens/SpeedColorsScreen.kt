@@ -1,0 +1,52 @@
+package com.Goldy.blindchess.ui.screens
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SpeedColorsScreen(onBack: () -> Unit, onModeSelected: (String) -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("SPEED COLORS") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground
+                )
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(onClick = { onModeSelected("zen") }, modifier = Modifier.fillMaxWidth(0.8f)) {
+                Text(text = "Zen", modifier = Modifier.padding(8.dp))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { /* TODO: Blitz Mode */ }, modifier = Modifier.fillMaxWidth(0.8f)) {
+                Text(text = "Blitz", modifier = Modifier.padding(8.dp))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedButton(onClick = { /* TODO: Tutorial */ }, modifier = Modifier.fillMaxWidth(0.8f)) {
+                Text(text = "Tutorial", modifier = Modifier.padding(8.dp))
+            }
+        }
+    }
+}
