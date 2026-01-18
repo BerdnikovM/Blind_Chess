@@ -40,7 +40,7 @@ fun SpeedColorsScreen(onBack: () -> Unit, onModeSelected: (String) -> Unit) {
                 Text(text = "Zen", modifier = Modifier.padding(8.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { /* TODO: Blitz Mode */ }, modifier = Modifier.fillMaxWidth(0.8f)) {
+            Button(onClick = { onModeSelected("blitz") }, modifier = Modifier.fillMaxWidth(0.8f)) {
                 Text(text = "Blitz", modifier = Modifier.padding(8.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))

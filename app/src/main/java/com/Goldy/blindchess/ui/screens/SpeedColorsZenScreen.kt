@@ -4,7 +4,6 @@ import android.media.AudioManager
 import android.media.ToneGenerator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector4D
-import androidx.compose.animation.core.TwoWayConverter
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -20,49 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-
-// --- Вспомогательные данные ---
-enum class SquareColor { WHITE, BLACK }
-
-private data class Square(val file: Char, val rank: Int) {
-    override fun toString(): String = "$file$rank"
-}
-
-private val ColorToVector = TwoWayConverter<Color, AnimationVector4D>(
-    convertToVector = { color ->
-        AnimationVector4D(color.red, color.green, color.blue, color.alpha)
-    },
-    convertFromVector = { vector ->
-        Color(red = vector.v1, green = vector.v2, blue = vector.v3, alpha = vector.v4)
-    }
-)
-
-private fun getRandomSquare(): Square {
-    val file = ('a'..'h').random()
-    val rank = (1..8).random()
-    return Square(file, rank)
-}
-
-private fun getSquareColor(square: Square): SquareColor {
-    val fileIndex = square.file - 'a'
-    val rankIndex = square.rank - 1
-    return if ((fileIndex + rankIndex) % 2 == 0) SquareColor.BLACK else SquareColor.WHITE
-}
-
-private fun getDiagonals(square: Square): Pair<String, String> {
-    val fIdx = square.file - 'a'
-    val rIdx = square.rank - 1
-    fun findEnd(df: Int, dr: Int): String {
-        var f = fIdx; var r = rIdx
-        while (f + df in 0..7 && r + dr in 0..7) { f += df; r += dr }
-        return "${'a' + f}${r + 1}"
-    }
-    return "${findEnd(-1, -1)}-${findEnd(1, 1)}" to "${findEnd(-1, 1)}-${findEnd(1, -1)}"
-}
 
 private enum class GameState { GUESSING, RESULT }
 
@@ -70,14 +29,15 @@ private enum class GameState { GUESSING, RESULT }
 @Composable
 fun SpeedColorsZenScreen(onBack: () -> Unit) {
     var gameState by remember { mutableStateOf(GameState.GUESSING) }
-    var currentSquare by remember { mutableStateOf(getRandomSquare()) }
+    var currentSquare by remember { mutableStateOf<Square>(getRandomSquare()) }
     var isCorrect by remember { mutableStateOf<Boolean?>(null) }
-
-    // Счетчик серии побед
     var streak by remember { mutableIntStateOf(0) }
 
     val backgroundColor = remember {
-        Animatable(initialValue = Color.Transparent, typeConverter = ColorToVector)
+        Animatable<Color, AnimationVector4D>(
+            initialValue = Color.Transparent,
+            typeConverter = ColorToVector
+        )
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -87,12 +47,7 @@ fun SpeedColorsZenScreen(onBack: () -> Unit) {
         val correct = getSquareColor(currentSquare) == answer
         isCorrect = correct
         gameState = GameState.RESULT
-
-        if (correct) {
-            streak++
-        } else {
-            streak = 0
-        }
+        if (correct) streak++ else streak = 0
 
         coroutineScope.launch {
             val target = if (correct) {
@@ -117,13 +72,8 @@ fun SpeedColorsZenScreen(onBack: () -> Unit) {
         topBar = {
             TopAppBar(
                 title = { Text("Speed Colors - Zen") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    }
-                },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
                 actions = {
-                    // Отображение Streak в правом углу
                     Text(
                         text = "Streak: $streak",
                         modifier = Modifier.padding(end = 16.dp),
@@ -135,22 +85,12 @@ fun SpeedColorsZenScreen(onBack: () -> Unit) {
             )
         }
     ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(backgroundColor.value)
-        ) {
+        Box(modifier = Modifier.fillMaxSize().padding(padding).background(backgroundColor.value)) {
             if (gameState == GameState.GUESSING) {
                 GuessingContent(square = currentSquare, onAnswer = ::processAnswer)
             } else {
                 isCorrect?.let {
-                    ResultContent(
-                        square = currentSquare,
-                        isCorrect = it,
-                        onContinue = ::nextRound,
-                        onFinish = onBack
-                    )
+                    ResultContent(square = currentSquare, isCorrect = it, onContinue = ::nextRound, onFinish = onBack)
                 }
             }
         }
@@ -177,7 +117,6 @@ private fun GuessingContent(square: Square, onAnswer: (SquareColor) -> Unit) {
             Button(
                 onClick = { onAnswer(SquareColor.BLACK) },
                 modifier = Modifier.weight(1f).height(70.dp),
-                // ИСПРАВЛЕНИЕ: Добавлена белая обводка для кнопки BLACK
                 border = BorderStroke(2.dp, Color.White),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black, contentColor = Color.White),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
@@ -207,7 +146,6 @@ private fun ResultContent(
         )
         Spacer(Modifier.height(24.dp))
 
-        // Шахматная доска с нотацией
         ChessboardWithNotation(squareToHighlight = square, diagonals = diagonals)
 
         Spacer(Modifier.height(24.dp))
@@ -227,7 +165,6 @@ private fun ResultContent(
         }
         Spacer(Modifier.height(12.dp))
 
-        // ИСПРАВЛЕНИЕ: Кнопка Finish теперь крупнее и заметнее
         OutlinedButton(
             onClick = onFinish,
             modifier = Modifier.fillMaxWidth(0.9f).height(56.dp),
@@ -263,18 +200,16 @@ private fun ChessboardWithNotation(squareToHighlight: Square, diagonals: Pair<St
     val allDiagSquares = getDiagonalList(diagonals.first) + getDiagonalList(diagonals.second)
 
     Row(modifier = Modifier.fillMaxWidth().aspectRatio(1f)) {
-        // Вертикальная нотация (Цифры 8-1)
         Column(modifier = Modifier.fillMaxHeight().width(24.dp)) {
             for (rank in 8 downTo 1) {
                 Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Text(text = rank.toString(), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
             }
-            Spacer(modifier = Modifier.height(24.dp)) // Уголок под буквами
+            Spacer(modifier = Modifier.height(24.dp))
         }
 
         Column(modifier = Modifier.weight(1f).fillMaxHeight()) {
-            // Сама доска
             Column(modifier = Modifier.weight(1f).fillMaxWidth().background(Color.Black).padding(1.dp)) {
                 for (rank in 8 downTo 1) {
                     Row(modifier = Modifier.weight(1f)) {
@@ -294,7 +229,6 @@ private fun ChessboardWithNotation(squareToHighlight: Square, diagonals: Pair<St
                     }
                 }
             }
-            // Горизонтальная нотация (Буквы a-h)
             Row(modifier = Modifier.height(24.dp).fillMaxWidth()) {
                 for (file in files) {
                     Box(modifier = Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {

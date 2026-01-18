@@ -27,7 +27,13 @@ fun AppNavigation(windowSizeClass: WindowSizeClass) {
         composable("speed_colors") {
             SpeedColorsScreen(
                 onBack = { navController.popBackStack() },
-                onModeSelected = { navController.navigate("speed_colors_zen") } // Simplified for now
+                onModeSelected = { mode -> 
+                    when (mode) {
+                        "zen" -> navController.navigate("speed_colors_zen")
+                        "blitz" -> navController.navigate("speed_colors_blitz")
+                        "tutorial" -> navController.navigate("speed_colors_tutorial")
+                    }
+                }
             )
         }
         composable("the_walker") {
@@ -41,6 +47,12 @@ fun AppNavigation(windowSizeClass: WindowSizeClass) {
         }
         composable("speed_colors_zen") {
             SpeedColorsZenScreen(onBack = { navController.popBackStack() })
+        }
+        composable("speed_colors_blitz") {
+            SpeedColorsBlitzScreen(onBack = { navController.popBackStack() })
+        }
+        composable("speed_colors_tutorial") {
+            SpeedColorsTutorialScreen(onBack = { navController.popBackStack() })
         }
     }
 }
