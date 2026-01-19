@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -29,13 +30,14 @@ private enum class BlitzState { START, PLAYING, FINISHED }
 fun SpeedColorsBlitzScreen(onBack: () -> Unit) {
     var gameState by remember { mutableStateOf(BlitzState.START) }
 
-    // Явно указываем тип <Square>, чтобы избежать ошибки "Cannot infer type"
     var currentSquare by remember { mutableStateOf<Square>(getRandomSquare()) }
 
     var score by remember { mutableIntStateOf(0) }
     var timeLeft by remember { mutableIntStateOf(60) }
 
-    // Явно указываем типы для Animatable, как мы делали в Zen режиме
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val scoreManager = remember { com.Goldy.blindchess.utils.ScoreManager(context) }
+
     val backgroundColor = remember {
         Animatable<Color, AnimationVector4D>(
             initialValue = Color.Transparent,
@@ -54,6 +56,7 @@ fun SpeedColorsBlitzScreen(onBack: () -> Unit) {
                 timeLeft--
             }
             gameState = BlitzState.FINISHED
+            scoreManager.saveBlitzHighScore(score)
         }
     }
 

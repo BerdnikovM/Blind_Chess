@@ -44,7 +44,11 @@ fun SpeedColorsScreen(onBack: () -> Unit, onModeSelected: (String) -> Unit) {
                 Text(text = "Blitz", modifier = Modifier.padding(8.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
-            OutlinedButton(onClick = { /* TODO: Tutorial */ }, modifier = Modifier.fillMaxWidth(0.8f)) {
+
+            OutlinedButton(
+                onClick = { onModeSelected("tutorial") },
+                modifier = Modifier.fillMaxWidth(0.8f)
+            ) {
                 Text(text = "Tutorial", modifier = Modifier.padding(8.dp))
             }
         }

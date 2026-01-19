@@ -33,7 +33,7 @@ fun SpeedColorsTutorialScreen(onBack: () -> Unit) {
     val tutorialTexts = listOf(
         "Welcome to Speed Colors! This is a great trainer to develop your chess vision.",
         "In the center of the screen, you will see coordinates of a random square, for example, c3.",
-        "Your task is to determine as quickly as possible the color of this square: white or black.",
+        "Your task is to determine as quickly as possible the color of this square: white or black. Also try to guess which diagonals pass through this square.",
         "Use these buttons to answer. Try pressing them now!",
         "In Zen mode, you can train without rushing, and in Blitz mode, you can compete for a time record.",
         "Ready to start training? Good luck!"

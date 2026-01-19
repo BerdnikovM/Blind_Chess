@@ -16,11 +16,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.utils.*
 import kotlinx.coroutines.launch
 
 private enum class GameState { GUESSING, RESULT }
@@ -33,11 +33,11 @@ fun SpeedColorsZenScreen(onBack: () -> Unit) {
     var isCorrect by remember { mutableStateOf<Boolean?>(null) }
     var streak by remember { mutableIntStateOf(0) }
 
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val scoreManager = remember { ScoreManager(context) }
+
     val backgroundColor = remember {
-        Animatable<Color, AnimationVector4D>(
-            initialValue = Color.Transparent,
-            typeConverter = ColorToVector
-        )
+        Animatable<Color, AnimationVector4D>(initialValue = Color.Transparent, typeConverter = ColorToVector)
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -47,7 +47,12 @@ fun SpeedColorsZenScreen(onBack: () -> Unit) {
         val correct = getSquareColor(currentSquare) == answer
         isCorrect = correct
         gameState = GameState.RESULT
-        if (correct) streak++ else streak = 0
+        if (correct) {
+            streak++
+        } else {
+            scoreManager.saveZenHighScore(streak)
+            streak = 0
+        }
 
         coroutineScope.launch {
             val target = if (correct) {
@@ -80,8 +85,7 @@ fun SpeedColorsZenScreen(onBack: () -> Unit) {
                         style = MaterialTheme.typography.titleMedium,
                         color = if (streak > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                     )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                }
             )
         }
     ) { padding ->
@@ -90,7 +94,15 @@ fun SpeedColorsZenScreen(onBack: () -> Unit) {
                 GuessingContent(square = currentSquare, onAnswer = ::processAnswer)
             } else {
                 isCorrect?.let {
-                    ResultContent(square = currentSquare, isCorrect = it, onContinue = ::nextRound, onFinish = onBack)
+                    ResultContent(
+                        square = currentSquare,
+                        isCorrect = it,
+                        onContinue = ::nextRound,
+                        onFinish = {
+                            scoreManager.saveZenHighScore(streak)
+                            onBack()
+                        }
+                    )
                 }
             }
         }
@@ -166,76 +178,12 @@ private fun ResultContent(
         Spacer(Modifier.height(12.dp))
 
         OutlinedButton(
-            onClick = onFinish,
+            onClick = onFinish, // Теперь просто вызываем переданный колбэк
             modifier = Modifier.fillMaxWidth(0.9f).height(56.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
         ) {
             Text("FINISH SESSION", fontSize = 16.sp, color = MaterialTheme.colorScheme.outline)
         }
         Spacer(Modifier.height(24.dp))
-    }
-}
-
-@Composable
-private fun ChessboardWithNotation(squareToHighlight: Square, diagonals: Pair<String, String>) {
-    val files = listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
-    val highlightColor = Color.Red.copy(alpha = 0.8f)
-    val diagonalColor = Color.Blue.copy(alpha = 0.25f)
-
-    fun getDiagonalList(range: String): List<String> {
-        val parts = range.split("-"); if (parts.size != 2) return emptyList()
-        val res = mutableListOf<String>()
-        var f = parts[0][0]; var r = parts[0][1].toString().toInt()
-        val ef = parts[1][0]; val er = parts[1][1].toString().toInt()
-        val df = if (ef > f) 1 else if (ef < f) -1 else 0
-        val dr = if (er > r) 1 else if (er < r) -1 else 0
-        while (true) {
-            res.add("$f$r")
-            if (f == ef && r == er) break
-            f = (f.code + df).toChar(); r += dr
-        }
-        return res
-    }
-
-    val allDiagSquares = getDiagonalList(diagonals.first) + getDiagonalList(diagonals.second)
-
-    Row(modifier = Modifier.fillMaxWidth().aspectRatio(1f)) {
-        Column(modifier = Modifier.fillMaxHeight().width(24.dp)) {
-            for (rank in 8 downTo 1) {
-                Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text(text = rank.toString(), fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                }
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-
-        Column(modifier = Modifier.weight(1f).fillMaxHeight()) {
-            Column(modifier = Modifier.weight(1f).fillMaxWidth().background(Color.Black).padding(1.dp)) {
-                for (rank in 8 downTo 1) {
-                    Row(modifier = Modifier.weight(1f)) {
-                        for (file in files) {
-                            val current = Square(file, rank)
-                            val isWhite = ((file - 'a') + (rank - 1)) % 2 != 0
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f).fillMaxHeight()
-                                    .background(if (isWhite) Color(0xFFEEEEEE) else Color(0xFF444444))
-                                    .drawBehind {
-                                        if (current.toString() in allDiagSquares) drawRect(diagonalColor)
-                                        if (current == squareToHighlight) drawCircle(color = highlightColor, radius = size.minDimension / 3)
-                                    }
-                            )
-                        }
-                    }
-                }
-            }
-            Row(modifier = Modifier.height(24.dp).fillMaxWidth()) {
-                for (file in files) {
-                    Box(modifier = Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                        Text(text = file.toString(), fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
-        }
     }
 }
