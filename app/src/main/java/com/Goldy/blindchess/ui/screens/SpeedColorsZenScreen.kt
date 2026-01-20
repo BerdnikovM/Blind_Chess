@@ -85,7 +85,8 @@ fun SpeedColorsZenScreen(onBack: () -> Unit) {
                         style = MaterialTheme.typography.titleMedium,
                         color = if (streak > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                     )
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->

@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 class ScoreManager(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("chess_scores", Context.MODE_PRIVATE)
 
+    // --- Speed Colors ---
     fun saveZenHighScore(score: Int) {
         val currentHigh = getZenHighScore()
         if (score > currentHigh) {
@@ -23,4 +24,21 @@ class ScoreManager(context: Context) {
     }
 
     fun getBlitzHighScore(): Int = prefs.getInt("blitz_high_score", 0)
+
+    // --- The Walker (Новое) ---
+    fun saveWalkerHighScore(difficulty: WalkerDifficulty, wave: Int) {
+        // Ключ зависит от сложности: walker_easy_best, walker_medium_best...
+        val key = "walker_${difficulty.name.lowercase()}_best"
+        val currentHigh = prefs.getInt(key, 0)
+
+        // Сохраняем, только если новая волна выше текущего рекорда
+        if (wave > currentHigh) {
+            prefs.edit().putInt(key, wave).apply()
+        }
+    }
+
+    fun getWalkerHighScore(difficulty: WalkerDifficulty): Int {
+        val key = "walker_${difficulty.name.lowercase()}_best"
+        return prefs.getInt(key, 0)
+    }
 }

@@ -22,7 +22,7 @@ private data class Protocol(val title: String, val subtitle: String, val icon: I
 
 private val protocols = listOf(
     Protocol("Speed Colors", "Rapidly identify square colors", Icons.Default.ColorLens, "speed_colors"),
-    Protocol("The Walker", "Follow the blindfold path", Icons.Default.DirectionsWalk, "the_walker"),
+    Protocol("The Walker", "Follow the blindfold path", Icons.Default.DirectionsWalk, "the_walker_menu"),
     Protocol("Knight Vision", "Obstacle memory and jump visualization", Icons.Default.Visibility, "knight_vision"),
     Protocol("Personnel Database", "Check your high scores", Icons.Default.Leaderboard, "personnel_database")
 )

@@ -2,7 +2,6 @@ package com.Goldy.blindchess.ui.screens
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -43,47 +42,76 @@ fun SpeedColorsTutorialScreen(onBack: () -> Unit) {
         topBar = {
             TopAppBar(
                 title = { Text("Tutorial") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } }
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            // Gameplay simulation
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+        // ИСПРАВЛЕНИЕ: Используем Column вместо Box для вертикального разделения
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            // ВЕРХНЯЯ ЧАСТЬ: Игровая симуляция. Занимает все доступное место (weight 1f)
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "c3",
-                    fontSize = 100.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.scale(if (step == 1) pulseScale else 1f),
-                    color = if (step == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "c3",
+                        fontSize = 100.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.scale(if (step == 1) pulseScale else 1f),
+                        color = if (step == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+                    )
 
-                Spacer(Modifier.height(80.dp))
+                    Spacer(Modifier.height(80.dp))
 
-                Row(modifier = Modifier.fillMaxWidth(0.85f), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Button(
-                        onClick = { if (step == 3) step++ },
-                        modifier = Modifier.weight(1f).height(70.dp).scale(if (step == 3) pulseScale else 1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
-                        border = BorderStroke(1.dp, Color.Gray)
-                    ) { Text("WHITE", fontWeight = FontWeight.Bold) }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.85f),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Button(
+                            onClick = { if (step == 3) step++ },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(70.dp)
+                                .scale(if (step == 3) pulseScale else 1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.White,
+                                contentColor = Color.Black
+                            ),
+                            border = BorderStroke(1.dp, Color.Gray)
+                        ) { Text("WHITE", fontWeight = FontWeight.Bold) }
 
-                    Button(
-                        onClick = { if (step == 3) step++ },
-                        modifier = Modifier.weight(1f).height(70.dp).scale(if (step == 3) pulseScale else 1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black, contentColor = Color.White),
-                        border = BorderStroke(2.dp, Color.White)
-                    ) { Text("BLACK", fontWeight = FontWeight.Bold) }
+                        Button(
+                            onClick = { if (step == 3) step++ },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(70.dp)
+                                .scale(if (step == 3) pulseScale else 1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Black,
+                                contentColor = Color.White
+                            ),
+                            border = BorderStroke(2.dp, Color.White)
+                        ) { Text("BLACK", fontWeight = FontWeight.Bold) }
+                    }
                 }
             }
 
-            // Visual Novel Style Dialogue Box
+            // НИЖНЯЯ ЧАСТЬ: Диалоговое окно
             Surface(
-                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f),
                 tonalElevation = 4.dp
