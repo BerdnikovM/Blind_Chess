@@ -31,6 +31,9 @@ fun PersonnelDatabaseScreen(onBack: () -> Unit) {
     val walkerMedium = scoreManager.getWalkerHighScore(WalkerDifficulty.MEDIUM)
     val walkerHard = scoreManager.getWalkerHighScore(WalkerDifficulty.HARD)
 
+    // Получаем рекорд Knight Vision (метод уже есть в вашем ScoreManager)
+    val knightVisionBest = scoreManager.getKnightVisionHighScore()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -49,7 +52,7 @@ fun PersonnelDatabaseScreen(onBack: () -> Unit) {
                 .fillMaxSize()
                 .padding(padding)
                 .padding(24.dp)
-                .verticalScroll(rememberScrollState()), // Добавляем скролл на случай маленьких экранов
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // --- SPEED COLORS ---
@@ -83,6 +86,21 @@ fun PersonnelDatabaseScreen(onBack: () -> Unit) {
             RecordCard(title = "Medium Mode", score = "Wave $walkerMedium")
             Spacer(modifier = Modifier.height(8.dp))
             RecordCard(title = "Hard Mode", score = "Wave $walkerHard")
+
+            Spacer(modifier = Modifier.height(32.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // --- KNIGHT VISION (Добавлено) ---
+            Text(
+                text = "KNIGHT VISION (Best Wave)",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Start)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            RecordCard(title = "Static Interference", score = "Wave $knightVisionBest")
 
             Spacer(modifier = Modifier.height(32.dp))
         }

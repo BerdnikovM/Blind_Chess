@@ -7,11 +7,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KnightVisionScreen(onBack: () -> Unit) {
+fun KnightVisionScreen(
+    onBack: () -> Unit,
+    onPlayClick: () -> Unit,     // Колбэк для игры
+    onTutorialClick: () -> Unit  // Колбэк для туториала (пока заглушка, но подготовим)
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -21,10 +26,8 @@ fun KnightVisionScreen(onBack: () -> Unit) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground
-                )
+                // Прозрачный фон
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->
@@ -36,11 +39,21 @@ fun KnightVisionScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = { /* TODO */ }, modifier = Modifier.fillMaxWidth(0.8f)) {
+            // Кнопка Игры
+            Button(
+                onClick = onPlayClick, // Вызываем колбэк
+                modifier = Modifier.fillMaxWidth(0.8f)
+            ) {
                 Text(text = "Static interference", modifier = Modifier.padding(8.dp))
             }
+
             Spacer(modifier = Modifier.height(16.dp))
-            OutlinedButton(onClick = { /* TODO */ }, modifier = Modifier.fillMaxWidth(0.8f)) {
+
+            // Кнопка Туториала
+            OutlinedButton(
+                onClick = onTutorialClick, // <-- Должно быть так
+                modifier = Modifier.fillMaxWidth(0.8f)
+            ) {
                 Text(text = "Tutorial", modifier = Modifier.padding(8.dp))
             }
         }

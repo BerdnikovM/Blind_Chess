@@ -1,3 +1,4 @@
+// app/src/main/java/com/Goldy/blindchess/utils/ScoreManager.kt
 package com.Goldy.blindchess.utils
 
 import android.content.Context
@@ -25,13 +26,10 @@ class ScoreManager(context: Context) {
 
     fun getBlitzHighScore(): Int = prefs.getInt("blitz_high_score", 0)
 
-    // --- The Walker (Новое) ---
+    // --- The Walker ---
     fun saveWalkerHighScore(difficulty: WalkerDifficulty, wave: Int) {
-        // Ключ зависит от сложности: walker_easy_best, walker_medium_best...
         val key = "walker_${difficulty.name.lowercase()}_best"
         val currentHigh = prefs.getInt(key, 0)
-
-        // Сохраняем, только если новая волна выше текущего рекорда
         if (wave > currentHigh) {
             prefs.edit().putInt(key, wave).apply()
         }
@@ -41,4 +39,14 @@ class ScoreManager(context: Context) {
         val key = "walker_${difficulty.name.lowercase()}_best"
         return prefs.getInt(key, 0)
     }
+
+    // --- Knight Vision ---
+    fun saveKnightVisionHighScore(wave: Int) {
+        val currentHigh = getKnightVisionHighScore()
+        if (wave > currentHigh) {
+            prefs.edit().putInt("knight_vision_best", wave).apply()
+        }
+    }
+
+    fun getKnightVisionHighScore(): Int = prefs.getInt("knight_vision_best", 0)
 }

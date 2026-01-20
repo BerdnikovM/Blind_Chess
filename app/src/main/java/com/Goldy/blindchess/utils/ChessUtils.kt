@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.R // Импорт ресурсов для доступа к R.drawable
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -213,17 +214,13 @@ fun getValidMove(current: Square, difficulty: WalkerDifficulty): MoveInstruction
                     if ((current.file + fStep) in files && (current.rank + rStep) in ranks) {
                         val vDir = if (rStep > 0) "Up" else "Down"
                         val hDir = if (fStep > 0) "Right" else "Left"
-
-                        // ИСПРАВЛЕНИЕ: Объединяем направления через дефис (например, Up-Right)
                         val combinedDir = "$vDir-$hDir"
-
                         val arrow = when {
                             fStep > 0 && rStep > 0 -> "↗"
                             fStep > 0 && rStep < 0 -> "↘"
                             fStep < 0 && rStep > 0 -> "↖"
                             else -> "↙"
                         }
-                        // Используем новый объединенный текст
                         possibleMoves.add(MoveInstruction("${Math.abs(rStep)} $combinedDir", arrow, fStep, rStep))
                     }
                 }
@@ -237,10 +234,104 @@ fun getValidMove(current: Square, difficulty: WalkerDifficulty): MoveInstruction
         knightOffsets.forEach { (fStep, rStep) ->
             if ((current.file + fStep) in files && (current.rank + rStep) in ranks) {
                 val vDir = if (rStep > 0) "Up" else "Down"; val hDir = if (fStep > 0) "Right" else "Left"
-                // Для коня оставляем как есть, так как это сложный ход
                 possibleMoves.add(MoveInstruction("${Math.abs(rStep)} $vDir, ${Math.abs(fStep)} $hDir", "♞", fStep, rStep))
             }
         }
     }
     return possibleMoves.random()
+}
+
+// --- Логика для режима Knight Vision (НОВОЕ) ---
+
+// Перечисление фигур с привязкой к ID ресурсов
+enum class ChessPiece(val resId: Int, val maxCount: Int = 8) {
+    PAWN(R.drawable.pawn),
+    ROOK(R.drawable.rook),
+    KNIGHT(R.drawable.knight),
+    BISHOP(R.drawable.bishop),
+    QUEEN(R.drawable.queen),
+    KING(R.drawable.king, 1) // Король может быть только один
+}
+
+// Генерация случайных препятствий
+fun generateObstacles(count: Int, excludeSquare: Square): Map<Square, ChessPiece> {
+    val obstacles = mutableMapOf<Square, ChessPiece>()
+    val availableSquares = mutableListOf<Square>()
+
+    // Создаем пул всех клеток, кроме стартовой
+    for (f in 'a'..'h') {
+        for (r in 1..8) {
+            val sq = Square(f, r)
+            if (sq != excludeSquare) availableSquares.add(sq)
+        }
+    }
+    availableSquares.shuffle() // Перемешиваем клетки
+
+    val pieceCounts = mutableMapOf<ChessPiece, Int>()
+
+    // Расставляем фигуры
+    var placed = 0
+    var attempt = 0
+    // Защита от бесконечного цикла (на всякий случай)
+    while (placed < count && attempt < availableSquares.size) {
+        val square = availableSquares[attempt]
+        val piece = ChessPiece.values().random()
+
+        val currentCount = pieceCounts.getOrDefault(piece, 0)
+        if (currentCount < piece.maxCount) {
+            obstacles[square] = piece
+            pieceCounts[piece] = currentCount + 1
+            placed++
+        }
+        attempt++
+    }
+    return obstacles
+}
+
+// Генерация инструкции для коня (только конь!), избегая препятствий
+fun getKnightInstruction(current: Square, obstacles: Map<Square, ChessPiece>): MoveInstruction {
+    val possibleMoves = mutableListOf<MoveInstruction>()
+    val files = 'a'..'h'; val ranks = 1..8
+    val knightOffsets = listOf(
+        Pair(1, 2), Pair(2, 1), Pair(2, -1), Pair(1, -2),
+        Pair(-1, -2), Pair(-2, -1), Pair(-2, 1), Pair(-1, 2)
+    )
+
+    knightOffsets.forEach { (fStep, rStep) ->
+        val targetFile = current.file + fStep
+        val targetRank = current.rank + rStep
+        val targetSq = Square(targetFile, targetRank)
+
+        // Проверяем: в пределах доски И не в препятствии
+        if (targetFile in files && targetRank in ranks && !obstacles.containsKey(targetSq)) {
+            val vDir = if (rStep > 0) "Up" else "Down"
+            val hDir = if (fStep > 0) "Right" else "Left"
+            possibleMoves.add(MoveInstruction("${Math.abs(rStep)} $vDir, ${Math.abs(fStep)} $hDir", "♞", fStep, rStep))
+        }
+    }
+
+    // Если ходов нет (зажат), возвращаем специальный маркер (экран игры должен это обработать)
+    return if (possibleMoves.isNotEmpty()) possibleMoves.random()
+    else MoveInstruction("TRAPPED", "X", 0, 0)
+}
+
+// Получить все валидные прыжки коня из клетки (для фазы угадывания)
+fun getValidKnightJumps(from: Square, obstacles: Map<Square, ChessPiece>): List<Square> {
+    val valid = mutableListOf<Square>()
+    val files = 'a'..'h'; val ranks = 1..8
+    val knightOffsets = listOf(
+        Pair(1, 2), Pair(2, 1), Pair(2, -1), Pair(1, -2),
+        Pair(-1, -2), Pair(-2, -1), Pair(-2, 1), Pair(-1, 2)
+    )
+
+    knightOffsets.forEach { (fStep, rStep) ->
+        val targetFile = from.file + fStep
+        val targetRank = from.rank + rStep
+        val targetSq = Square(targetFile, targetRank)
+
+        if (targetFile in files && targetRank in ranks && !obstacles.containsKey(targetSq)) {
+            valid.add(targetSq)
+        }
+    }
+    return valid
 }
