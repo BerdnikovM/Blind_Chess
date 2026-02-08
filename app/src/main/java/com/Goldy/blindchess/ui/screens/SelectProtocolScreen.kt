@@ -14,36 +14,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource // <-- ВАЖНЫЙ ИМПОРТ 1
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import com.Goldy.blindchess.R // <-- ВАЖНЫЙ ИМПОРТ 2 (Ваш пакет)
 
-private data class Protocol(val title: String, val subtitle: String, val icon: ImageVector, val route: String)
-
-private val protocols = listOf(
-    Protocol("Speed Colors", "Rapidly identify square colors", Icons.Default.ColorLens, "speed_colors"),
-    Protocol("The Walker", "Follow the blindfold path", Icons.Default.DirectionsWalk, "the_walker_menu"),
-    Protocol("Knight Vision", "Obstacle memory and jump visualization", Icons.Default.Visibility, "knight_vision"),
-    Protocol("Personnel Database", "Check your high scores", Icons.Default.Leaderboard, "personnel_database")
-)
+// Изменили типы title и subtitle на Int (ID ресурса)
+private data class Protocol(val titleResId: Int, val subtitleResId: Int, val icon: ImageVector, val route: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectProtocolScreen(
-    windowSizeClass: WindowSizeClass, 
+    windowSizeClass: WindowSizeClass,
     onBack: () -> Unit,
     onProtocolSelected: (String) -> Unit
 ) {
+    // Список создаем здесь, чтобы иметь доступ к R.string
+    val protocols = listOf(
+        Protocol(R.string.protocol_speed_colors, R.string.protocol_desc_speed, Icons.Default.ColorLens, "speed_colors"),
+        Protocol(R.string.protocol_the_walker, R.string.protocol_desc_walker, Icons.Default.DirectionsWalk, "the_walker_menu"),
+        Protocol(R.string.protocol_knight_vision, R.string.protocol_desc_knight, Icons.Default.Visibility, "knight_vision"),
+        Protocol(R.string.btn_database, R.string.db_title, Icons.Default.Leaderboard, "personnel_database") // База данных
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("SELECT PROTOCOL") },
+                title = { Text(stringResource(R.string.select_protocol_title)) }, // <-- ЗАМЕНА 1
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back)) // <-- ЗАМЕНА 2
                     }
                 },
-                 colors = TopAppBarDefaults.topAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     titleContentColor = MaterialTheme.colorScheme.onBackground
                 )
@@ -74,11 +78,12 @@ private fun ProtocolCard(protocol: Protocol, onClick: () -> Unit) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(protocol.icon, contentDescription = protocol.title, modifier = Modifier.size(40.dp))
+            // stringResource(protocol.titleResId) - достаем строку по ID
+            Icon(protocol.icon, contentDescription = stringResource(protocol.titleResId), modifier = Modifier.size(40.dp))
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(text = protocol.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Text(text = protocol.subtitle, style = MaterialTheme.typography.bodyMedium)
+                Text(text = stringResource(protocol.titleResId), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(text = stringResource(protocol.subtitleResId), style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

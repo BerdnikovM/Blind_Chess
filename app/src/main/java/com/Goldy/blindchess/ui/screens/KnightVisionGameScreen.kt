@@ -15,11 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.R
 import com.Goldy.blindchess.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -66,8 +68,7 @@ fun KnightVisionGameScreen(onBack: () -> Unit) {
     // Хелпер для загрузки картинок
     fun getBitmap(resId: Int) = BitmapFactory.decodeResource(context.resources, resId).asImageBitmap()
 
-    // ИСПРАВЛЕНИЕ: Фиксированная скорость показа инструкций (без ускорения)
-    // 2.0 секунды — оптимально, чтобы успеть соотнести ход с картой препятствий в голове
+    // Фиксированная скорость показа инструкций (без ускорения)
     val timePerStep = 2.0
 
     fun prepareRound() {
@@ -172,8 +173,8 @@ fun KnightVisionGameScreen(onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Knight Vision") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                title = { Text(stringResource(R.string.protocol_knight_vision).uppercase()) },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) } },
                 actions = {
                     Row(Modifier.padding(end = 16.dp)) {
                         repeat(lives) { Icon(Icons.Default.Favorite, null, tint = Color.Red) }
@@ -187,7 +188,7 @@ fun KnightVisionGameScreen(onBack: () -> Unit) {
             // Верхняя панель статистики
             Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Wave $wave", fontWeight = FontWeight.Bold)
+                    Text("${stringResource(R.string.wave)} $wave", fontWeight = FontWeight.Bold)
                     Row {
                         val roundsInWave = if (wave == 1) 3 else 5
                         repeat(roundsInWave) { i ->
@@ -196,9 +197,9 @@ fun KnightVisionGameScreen(onBack: () -> Unit) {
                     }
                 }
                 if (gameState == KVState.GUESSING) {
-                    Text("Found: ${foundTargets.size}/${validTargets.size}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.kv_found, foundTargets.size, validTargets.size), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 } else if (gameState == KVState.PREVIEW) {
-                    Text("Memorize: ${previewTime}s", color = Color.Red, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.kv_memorize_timer, previewTime), color = Color.Red, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -206,7 +207,7 @@ fun KnightVisionGameScreen(onBack: () -> Unit) {
                 when (gameState) {
                     KVState.PREVIEW -> {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Memorize Obstacles", style = MaterialTheme.typography.headlineSmall)
+                            Text(stringResource(R.string.kv_memorize), style = MaterialTheme.typography.headlineSmall)
                             Spacer(Modifier.height(16.dp))
                             Box(Modifier.fillMaxWidth(0.95f)) {
                                 BaseChessboard(
@@ -231,28 +232,30 @@ fun KnightVisionGameScreen(onBack: () -> Unit) {
                         Text("$countdown", fontSize = 80.sp, fontWeight = FontWeight.Black)
                     }
                     KVState.START_SQUARE -> {
-                        Text("Start: $startSquare", fontSize = 60.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.walker_start, startSquare.toString()), fontSize = 60.sp, fontWeight = FontWeight.Bold)
                     }
                     KVState.INSTRUCTIONS -> {
                         if (showInstruction && currentInstructionIdx < instructions.size) {
                             val move = instructions[currentInstructionIdx]
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(move.icon, fontSize = 100.sp)
-                                Text(move.text, fontSize = 40.sp, fontWeight = FontWeight.Medium)
+                                // ИСПРАВЛЕНИЕ: Используем функцию resolveInstructionText для перевода
+                                Text(
+                                    text = resolveInstructionText(move),
+                                    fontSize = 40.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
                             }
                         }
                     }
                     KVState.GUESSING -> {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Click all valid jumps!", style = MaterialTheme.typography.titleMedium)
+                            Text(stringResource(R.string.kv_click_jumps), style = MaterialTheme.typography.titleMedium)
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Box(Modifier.fillMaxWidth(0.95f)) {
                                 BaseChessboard(
                                     onDrawSquare = { square ->
-                                        // ИСПРАВЛЕНИЕ: Мы НЕ рисуем коня (currentSquare).
-                                        // Пользователь должен сам помнить, где он стоит.
-
                                         // 1. Рисуем уже найденные цели (Зеленые)
                                         if (square in foundTargets) {
                                             drawCircle(Color.Green.copy(alpha = 0.5f), radius = size.minDimension / 3)
@@ -267,7 +270,7 @@ fun KnightVisionGameScreen(onBack: () -> Unit) {
                                         if (isProcessing) return@BaseChessboard
                                         // Игнорируем клик по уже найденным
                                         if (clicked in foundTargets) return@BaseChessboard
-                                        // Игнорируем клик по самому коню (если пользователь догадался где он и ткнул туда)
+                                        // Игнорируем клик по самому коню
                                         if (clicked == currentSquare) return@BaseChessboard
 
                                         isProcessing = true
@@ -324,9 +327,9 @@ fun KnightVisionGameScreen(onBack: () -> Unit) {
                     }
                     KVState.GAME_OVER -> {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("GAME OVER", fontSize = 40.sp, color = Color.Red, fontWeight = FontWeight.Bold)
-                            Text("Wave: $wave, Round: $round")
-                            Button(onClick = { lives = 3; wave = 1; round = 1; prepareRound() }) { Text("Try Again") }
+                            Text(stringResource(R.string.game_over), fontSize = 40.sp, color = Color.Red, fontWeight = FontWeight.Bold)
+                            Text("${stringResource(R.string.wave)}: $wave, ${stringResource(R.string.round)}: $round")
+                            Button(onClick = { lives = 3; wave = 1; round = 1; prepareRound() }) { Text(stringResource(R.string.try_again)) }
                         }
                     }
                 }

@@ -10,9 +10,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource // <-- ВАЖНО
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.R // <-- ВАЖНО
 import com.Goldy.blindchess.utils.Square
 import com.Goldy.blindchess.utils.TutorialChessboard
 
@@ -22,46 +24,43 @@ fun TheWalkerTutorialScreen(onFinish: () -> Unit) {
     var step by remember { mutableIntStateOf(0) }
 
     val tutorialTexts = listOf(
-        "Welcome to The Walker! This mode trains your ability to visualize piece movement.",
-        "First, you will see a starting square. For example, 'c3'. Remember it!",
-        "Then, you will see a series of instructions. For example: '2 Up'.",
-        "Your goal is to follow these moves in your mind starting from 'c3'.",
-        "If you start at c3 and go 2 Up... you end up at c5.",
-        "After instructions finish, an empty board appears. You must click the final square (c5).",
-        "You have 3 lives. Each mistake costs a life. The game gets faster every wave!",
-        "Ready to walk? Let's go!"
+        stringResource(R.string.tut_walker_step_1),
+        stringResource(R.string.tut_walker_step_2),
+        stringResource(R.string.tut_walker_step_3),
+        stringResource(R.string.tut_walker_step_4),
+        stringResource(R.string.tut_walker_step_5),
+        stringResource(R.string.tut_walker_step_6),
+        stringResource(R.string.tut_walker_step_7),
+        stringResource(R.string.tut_walker_step_8)
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("How to Play") },
-                navigationIcon = { IconButton(onClick = onFinish) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
-                // Прозрачный фон для единого стиля
+                title = { Text(stringResource(R.string.how_to_play)) }, // <-- ЗАМЕНА (How to Play)
+                navigationIcon = { IconButton(onClick = onFinish) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) } }, // <-- ЗАМЕНА
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->
-        // Используем Column для вертикального разделения пространства
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // ВЕРХНЯЯ ЧАСТЬ: Занимает все свободное место (weight 1f) и центрирует контент
             Box(
                 modifier = Modifier
-                    .weight(1f) // Это ключевой момент адаптивности
+                    .weight(1f)
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     when (step) {
-                        0 -> Text("The Walker", fontSize = 40.sp, fontWeight = FontWeight.Bold)
+                        0 -> Text(stringResource(R.string.protocol_the_walker), fontSize = 40.sp, fontWeight = FontWeight.Bold) // <-- ЗАМЕНА
                         1 -> Text("c3", fontSize = 80.sp, fontWeight = FontWeight.Bold)
                         2 -> {
                             Text("↑", fontSize = 100.sp)
-                            Text("2 Up", fontSize = 40.sp)
+                            Text(stringResource(R.string.tut_walker_ex_move), fontSize = 40.sp) // <-- ЗАМЕНА (Пример хода: "2 Up" / "2 Вверх")
                         }
                         3, 4, 5 -> {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -78,12 +77,11 @@ fun TheWalkerTutorialScreen(onFinish: () -> Unit) {
                         6 -> {
                             Row { Text("❤❤❤", fontSize = 40.sp, color = Color.Red) }
                         }
-                        else -> Text("The Walker", fontSize = 40.sp, fontWeight = FontWeight.Bold)
+                        else -> Text(stringResource(R.string.protocol_the_walker), fontSize = 40.sp, fontWeight = FontWeight.Bold) // <-- ЗАМЕНА
                     }
                 }
             }
 
-            // НИЖНЯЯ ЧАСТЬ: Диалоговое окно (всегда прижато к низу)
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -104,7 +102,7 @@ fun TheWalkerTutorialScreen(onFinish: () -> Unit) {
                         onClick = { if (step < tutorialTexts.size - 1) step++ else onFinish() },
                         modifier = Modifier.align(Alignment.End)
                     ) {
-                        Text(if (step < tutorialTexts.size - 1) "NEXT" else "PLAY")
+                        Text(if (step < tutorialTexts.size - 1) stringResource(R.string.next) else stringResource(R.string.play)) // <-- ЗАМЕНА
                     }
                 }
             }

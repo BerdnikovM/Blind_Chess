@@ -11,9 +11,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource // <--- ВАЖНО
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.R // <--- ВАЖНО
 import com.Goldy.blindchess.utils.ScoreManager
 import com.Goldy.blindchess.utils.WalkerDifficulty
 
@@ -23,7 +25,6 @@ fun PersonnelDatabaseScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val scoreManager = remember { ScoreManager(context) }
 
-    // Получаем данные
     val zenBest = scoreManager.getZenHighScore()
     val blitzBest = scoreManager.getBlitzHighScore()
 
@@ -31,16 +32,15 @@ fun PersonnelDatabaseScreen(onBack: () -> Unit) {
     val walkerMedium = scoreManager.getWalkerHighScore(WalkerDifficulty.MEDIUM)
     val walkerHard = scoreManager.getWalkerHighScore(WalkerDifficulty.HARD)
 
-    // Получаем рекорд Knight Vision (метод уже есть в вашем ScoreManager)
     val knightVisionBest = scoreManager.getKnightVisionHighScore()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("PERSONNEL DATABASE") },
+                title = { Text(stringResource(R.string.db_title)) }, // <-- ЗАМЕНА
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back)) // <-- ЗАМЕНА
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = androidx.compose.ui.graphics.Color.Transparent)
@@ -57,16 +57,16 @@ fun PersonnelDatabaseScreen(onBack: () -> Unit) {
         ) {
             // --- SPEED COLORS ---
             Text(
-                text = "SPEED COLORS",
+                text = stringResource(R.string.protocol_speed_colors), // <-- ЗАМЕНА
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Start)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            RecordCard(title = "Zen Best Streak", score = zenBest.toString())
+            RecordCard(title = stringResource(R.string.db_sc_zen_best), score = zenBest.toString()) // <-- ЗАМЕНА
             Spacer(modifier = Modifier.height(8.dp))
-            RecordCard(title = "Blitz High Score", score = blitzBest.toString())
+            RecordCard(title = stringResource(R.string.db_sc_blitz_high), score = blitzBest.toString()) // <-- ЗАМЕНА
 
             Spacer(modifier = Modifier.height(32.dp))
             HorizontalDivider()
@@ -74,33 +74,33 @@ fun PersonnelDatabaseScreen(onBack: () -> Unit) {
 
             // --- THE WALKER ---
             Text(
-                text = "THE WALKER (Best Wave)",
+                text = stringResource(R.string.db_walker_best), // <-- ЗАМЕНА
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Start)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            RecordCard(title = "Easy Mode", score = "Wave $walkerEasy")
+            RecordCard(title = stringResource(R.string.walker_easy), score = "${stringResource(R.string.wave)} $walkerEasy") // <-- ЗАМЕНА (Easy + "Wave 5")
             Spacer(modifier = Modifier.height(8.dp))
-            RecordCard(title = "Medium Mode", score = "Wave $walkerMedium")
+            RecordCard(title = stringResource(R.string.walker_medium), score = "${stringResource(R.string.wave)} $walkerMedium") // <-- ЗАМЕНА
             Spacer(modifier = Modifier.height(8.dp))
-            RecordCard(title = "Hard Mode", score = "Wave $walkerHard")
+            RecordCard(title = stringResource(R.string.walker_hard), score = "${stringResource(R.string.wave)} $walkerHard") // <-- ЗАМЕНА
 
             Spacer(modifier = Modifier.height(32.dp))
             HorizontalDivider()
             Spacer(modifier = Modifier.height(32.dp))
 
-            // --- KNIGHT VISION (Добавлено) ---
+            // --- KNIGHT VISION ---
             Text(
-                text = "KNIGHT VISION (Best Wave)",
+                text = stringResource(R.string.db_kv_best), // <-- ЗАМЕНА
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Start)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            RecordCard(title = "Static Interference", score = "Wave $knightVisionBest")
+            RecordCard(title = stringResource(R.string.kv_static), score = "${stringResource(R.string.wave)} $knightVisionBest") // <-- ЗАМЕНА
 
             Spacer(modifier = Modifier.height(32.dp))
         }

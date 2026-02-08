@@ -12,9 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource // <--- ВАЖНО
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.R // <--- ВАЖНО
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,20 +31,21 @@ fun SpeedColorsTutorialScreen(onBack: () -> Unit) {
         label = "scale"
     )
 
+    // Используем ресурсы для текстов (6 шагов)
     val tutorialTexts = listOf(
-        "Welcome to Speed Colors! This is a great trainer to develop your chess vision.",
-        "In the center of the screen, you will see coordinates of a random square, for example, c3.",
-        "Your task is to determine as quickly as possible the color of this square: white or black. Also try to guess which diagonals pass through this square.",
-        "Use these buttons to answer. Try pressing them now!",
-        "In Zen mode, you can train without rushing, and in Blitz mode, you can compete for a time record.",
-        "Ready to start training? Good luck!"
+        stringResource(R.string.tut_sc_step_1),
+        stringResource(R.string.tut_sc_step_2),
+        stringResource(R.string.tut_sc_step_3),
+        stringResource(R.string.tut_sc_step_4),
+        stringResource(R.string.tut_sc_step_5),
+        stringResource(R.string.tut_sc_step_6)
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Tutorial") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                title = { Text(stringResource(R.string.tutorial)) }, // <-- ЗАМЕНА
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) } }, // <-- ЗАМЕНА
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
@@ -89,7 +92,7 @@ fun SpeedColorsTutorialScreen(onBack: () -> Unit) {
                                 contentColor = Color.Black
                             ),
                             border = BorderStroke(1.dp, Color.Gray)
-                        ) { Text("WHITE", fontWeight = FontWeight.Bold) }
+                        ) { Text(stringResource(R.string.sc_white), fontWeight = FontWeight.Bold) } // <-- ЗАМЕНА
 
                         Button(
                             onClick = { if (step == 3) step++ },
@@ -102,7 +105,7 @@ fun SpeedColorsTutorialScreen(onBack: () -> Unit) {
                                 contentColor = Color.White
                             ),
                             border = BorderStroke(2.dp, Color.White)
-                        ) { Text("BLACK", fontWeight = FontWeight.Bold) }
+                        ) { Text(stringResource(R.string.sc_black), fontWeight = FontWeight.Bold) } // <-- ЗАМЕНА
                     }
                 }
             }
@@ -118,7 +121,7 @@ fun SpeedColorsTutorialScreen(onBack: () -> Unit) {
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
-                        text = tutorialTexts[step],
+                        text = tutorialTexts.getOrElse(step) { "" }, // getOrElse безопаснее
                         fontSize = 17.sp,
                         lineHeight = 22.sp,
                         minLines = 3
@@ -130,7 +133,7 @@ fun SpeedColorsTutorialScreen(onBack: () -> Unit) {
                         onClick = { if (step < tutorialTexts.size - 1) step++ else onBack() },
                         modifier = Modifier.align(Alignment.End)
                     ) {
-                        Text(if (step < tutorialTexts.size - 1) "NEXT" else "GOT IT")
+                        Text(if (step < tutorialTexts.size - 1) stringResource(R.string.next) else stringResource(R.string.got_it)) // <-- ЗАМЕНА
                     }
                 }
             }

@@ -20,10 +20,17 @@ fun AppNavigation(windowSizeClass: WindowSizeClass) {
         composable("main") {
             MainScreen(
                 windowSizeClass = windowSizeClass,
-                onInitialize = { navController.navigate("select_protocol") }
+                onInitialize = { navController.navigate("select_protocol") },
+                onSettingsClick = { navController.navigate("settings") } // Ведем в настройки
             )
         }
 
+        // Экран настроек (НОВЫЙ)
+        composable("settings") {
+            SettingsScreen(onBack = { navController.popBackStack() })
+        }
+
+        // Выбор протокола (здесь внутри есть кнопка Personnel Database)
         composable("select_protocol") {
             SelectProtocolScreen(
                 windowSizeClass = windowSizeClass,
@@ -59,8 +66,6 @@ fun AppNavigation(windowSizeClass: WindowSizeClass) {
         }
 
         // --- THE WALKER ---
-
-        // 1. Меню
         composable("the_walker_menu") {
             TheWalkerMenuScreen(
                 onTutorialClick = { navController.navigate("the_walker_tutorial") },
@@ -71,7 +76,6 @@ fun AppNavigation(windowSizeClass: WindowSizeClass) {
             )
         }
 
-        // 2. Игра
         composable(
             route = "the_walker_game/{difficulty}",
             arguments = listOf(navArgument("difficulty") { type = NavType.StringType })
@@ -89,28 +93,23 @@ fun AppNavigation(windowSizeClass: WindowSizeClass) {
             )
         }
 
-        // 3. Туториал
         composable("the_walker_tutorial") {
             TheWalkerTutorialScreen(onFinish = { navController.popBackStack() })
         }
 
         // --- KNIGHT VISION ---
-
-        // 1. Меню
         composable("knight_vision") {
             KnightVisionScreen(
                 onBack = { navController.popBackStack() },
                 onPlayClick = { navController.navigate("knight_vision_game") },
-                onTutorialClick = { navController.navigate("knight_vision_tutorial") } // Теперь ведет куда надо
+                onTutorialClick = { navController.navigate("knight_vision_tutorial") }
             )
         }
 
-        // 2. Игра
         composable("knight_vision_game") {
             KnightVisionGameScreen(onBack = { navController.popBackStack() })
         }
 
-        // 3. Туториал (ДОБАВЛЕНО)
         composable("knight_vision_tutorial") {
             KnightVisionTutorialScreen(onFinish = { navController.popBackStack() })
         }

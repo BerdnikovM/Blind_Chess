@@ -2,17 +2,23 @@ package com.Goldy.blindchess.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import com.Goldy.blindchess.R
 
 @Composable
-fun MainScreen(windowSizeClass: WindowSizeClass, onInitialize: () -> Unit) {
+fun MainScreen(
+    windowSizeClass: WindowSizeClass,
+    onInitialize: () -> Unit,
+    onSettingsClick: () -> Unit // Только настройки, базу данных не трогаем
+) {
     val isCompact = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -24,27 +30,31 @@ fun MainScreen(windowSizeClass: WindowSizeClass, onInitialize: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "BlindChess",
-                style = MaterialTheme.typography.displayMedium,
-                fontWeight = FontWeight.Bold
+                text = stringResource(R.string.main_title),
+                fontSize = if (isCompact) 32.sp else 48.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 4.sp,
+                style = MaterialTheme.typography.displayMedium
             )
-            Text(
-                text = "CLASSIFIED TRAINING TOOL",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Spacer(modifier = Modifier.height(if (isCompact) 64.dp else 128.dp))
+
+            Spacer(modifier = Modifier.height(if (isCompact) 48.dp else 128.dp))
+
+            // Кнопка Старт
             Button(
                 onClick = onInitialize,
-                modifier = Modifier.fillMaxWidth(if (isCompact) 0.8f else 0.5f)
+                modifier = Modifier.fillMaxWidth(if (isCompact) 0.8f else 0.5f).height(60.dp)
             ) {
-                Text(text = "INITIALIZE SEQUENCE >", modifier = Modifier.padding(8.dp))
+                Text(stringResource(R.string.btn_start))
             }
-            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Кнопка Настроек (Базы данных тут нет)
             OutlinedButton(
-                onClick = { /* TODO: Handle settings */ },
-                modifier = Modifier.fillMaxWidth(if (isCompact) 0.8f else 0.5f)
+                onClick = onSettingsClick,
+                modifier = Modifier.fillMaxWidth(if (isCompact) 0.8f else 0.5f).height(60.dp)
             ) {
-                Text(text = "SETTINGS", modifier = Modifier.padding(8.dp))
+                Text(stringResource(R.string.btn_settings))
             }
         }
     }

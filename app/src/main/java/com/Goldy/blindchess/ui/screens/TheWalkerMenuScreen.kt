@@ -8,24 +8,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource // <--- ВАЖНО
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.R // <--- ВАЖНО
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheWalkerMenuScreen(
     onTutorialClick: () -> Unit,
-    onDifficultySelect: (String) -> Unit, // Передаем строку: "EASY", "MEDIUM", "HARD"
+    onDifficultySelect: (String) -> Unit,
     onBack: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("The Walker") },
+                title = { Text(stringResource(R.string.protocol_the_walker).uppercase()) }, // <-- ЗАМЕНА
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) // <-- ЗАМЕНА
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -41,7 +43,7 @@ fun TheWalkerMenuScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Choose Difficulty",
+                text = stringResource(R.string.walker_choose_difficulty), // <-- ЗАМЕНА
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
@@ -51,30 +53,30 @@ fun TheWalkerMenuScreen(
 
             // Кнопки Сложности
             MenuButton(
-                title = "Easy",
-                subtitle = "Rook moves only (↕ ↔)",
+                title = stringResource(R.string.walker_easy), // <-- ЗАМЕНА
+                subtitle = stringResource(R.string.walker_desc_easy), // <-- ЗАМЕНА
                 onClick = { onDifficultySelect("EASY") },
-                containerColor = Color(0xFF4CAF50), // Зеленый
+                containerColor = Color(0xFF4CAF50),
                 textColor = Color.White
             )
 
             Spacer(Modifier.height(24.dp))
 
             MenuButton(
-                title = "Medium",
-                subtitle = "Rook + Bishop moves (↗ ↘)",
+                title = stringResource(R.string.walker_medium), // <-- ЗАМЕНА
+                subtitle = stringResource(R.string.walker_desc_medium), // <-- ЗАМЕНА
                 onClick = { onDifficultySelect("MEDIUM") },
-                containerColor = Color(0xFFFF9800), // Оранжевый
+                containerColor = Color(0xFFFF9800),
                 textColor = Color.White
             )
 
             Spacer(Modifier.height(16.dp))
 
             MenuButton(
-                title = "Hard",
-                subtitle = "All moves + Knight (♞)",
+                title = stringResource(R.string.walker_hard), // <-- ЗАМЕНА
+                subtitle = stringResource(R.string.walker_desc_hard), // <-- ЗАМЕНА
                 onClick = { onDifficultySelect("HARD") },
-                containerColor = Color(0xFFF44336), // Красный
+                containerColor = Color(0xFFF44336),
                 textColor = Color.White
             )
 
@@ -82,8 +84,8 @@ fun TheWalkerMenuScreen(
 
             // Кнопка Обучения
             MenuButton(
-                title = "Tutorial",
-                subtitle = "Learn the rules",
+                title = stringResource(R.string.tutorial), // <-- ЗАМЕНА
+                subtitle = "",
                 onClick = onTutorialClick,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 textColor = MaterialTheme.colorScheme.onSecondaryContainer

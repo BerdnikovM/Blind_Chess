@@ -55,6 +55,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended-android:1.6.0") // Или более новая версия
     implementation("androidx.compose.animation:animation")
     implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -16,10 +16,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.Goldy.blindchess.R // Импорт ресурсов для доступа к R.drawable
+import com.Goldy.blindchess.R
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -181,98 +182,152 @@ fun TutorialChessboard(startSquare: Square, endSquare: Square) {
     )
 }
 
-// --- Логика для режима The Walker ---
+// --- Логика генерации ходов ---
+
 enum class WalkerDifficulty { EASY, MEDIUM, HARD }
-data class MoveInstruction(val text: String, val icon: String, val df: Int, val dr: Int)
+
+// ОБНОВЛЕННЫЙ КЛАСС:
+// - templateRes и args: для перевода в UI
+// - text: сохраняем для совместимости (проверка "TRAPPED")
+data class MoveInstruction(
+    val templateRes: Int,
+    val args: List<Any>, // Числа или ID ресурсов (Int)
+    val icon: String,
+    val df: Int,
+    val dr: Int,
+    val text: String = "" // Для технических целей (например "TRAPPED")
+)
+
+// Хелпер: выбор ID ресурса направления
+private fun getDirectionRes(step: Int, isVertical: Boolean): Int {
+    return if (isVertical) {
+        if (step > 0) R.string.dir_up else R.string.dir_down
+    } else {
+        if (step > 0) R.string.dir_right else R.string.dir_left
+    }
+}
+
+// Хелпер: иконка стрелки
+private fun getArrowIcon(fStep: Int, rStep: Int): String {
+    return when {
+        fStep == 0 && rStep > 0 -> "↑"
+        fStep == 0 && rStep < 0 -> "↓"
+        fStep > 0 && rStep == 0 -> "→"
+        fStep < 0 && rStep == 0 -> "←"
+        fStep > 0 && rStep > 0 -> "↗"
+        fStep > 0 && rStep < 0 -> "↘"
+        fStep < 0 && rStep > 0 -> "↖"
+        else -> "↙"
+    }
+}
 
 fun getValidMove(current: Square, difficulty: WalkerDifficulty): MoveInstruction {
     val possibleMoves = mutableListOf<MoveInstruction>()
     val files = 'a'..'h'; val ranks = 1..8
     val steps = listOf(-5, -4, -3, -2, -1, 1, 2, 3, 4, 5)
 
-    // EASY
+    // EASY (Прямые)
     steps.forEach { fStep ->
         if ((current.file + fStep) in files) {
-            val dirText = if (fStep > 0) "Right" else "Left"
-            val arrow = if (fStep > 0) "→" else "←"
-            possibleMoves.add(MoveInstruction("${Math.abs(fStep)} $dirText", arrow, fStep, 0))
+            possibleMoves.add(
+                MoveInstruction(
+                    templateRes = R.string.move_template_simple,
+                    args = listOf(Math.abs(fStep), getDirectionRes(fStep, false)),
+                    icon = getArrowIcon(fStep, 0),
+                    df = fStep, dr = 0,
+                    text = "${Math.abs(fStep)} ${if (fStep > 0) "Right" else "Left"}" // Legacy text
+                )
+            )
         }
     }
     steps.forEach { rStep ->
         if ((current.rank + rStep) in ranks) {
-            val dirText = if (rStep > 0) "Up" else "Down"
-            val arrow = if (rStep > 0) "↑" else "↓"
-            possibleMoves.add(MoveInstruction("${Math.abs(rStep)} $dirText", arrow, 0, rStep))
+            possibleMoves.add(
+                MoveInstruction(
+                    templateRes = R.string.move_template_simple,
+                    args = listOf(Math.abs(rStep), getDirectionRes(rStep, true)),
+                    icon = getArrowIcon(0, rStep),
+                    df = 0, dr = rStep,
+                    text = "${Math.abs(rStep)} ${if (rStep > 0) "Up" else "Down"}" // Legacy text
+                )
+            )
         }
     }
 
-    // MEDIUM & HARD (Diagonal)
+    // MEDIUM & HARD (Диагонали)
     if (difficulty == WalkerDifficulty.MEDIUM || difficulty == WalkerDifficulty.HARD) {
         steps.forEach { fStep ->
             steps.forEach { rStep ->
                 if (Math.abs(fStep) == Math.abs(rStep)) {
                     if ((current.file + fStep) in files && (current.rank + rStep) in ranks) {
-                        val vDir = if (rStep > 0) "Up" else "Down"
-                        val hDir = if (fStep > 0) "Right" else "Left"
-                        val combinedDir = "$vDir-$hDir"
-                        val arrow = when {
-                            fStep > 0 && rStep > 0 -> "↗"
-                            fStep > 0 && rStep < 0 -> "↘"
-                            fStep < 0 && rStep > 0 -> "↖"
-                            else -> "↙"
-                        }
-                        possibleMoves.add(MoveInstruction("${Math.abs(rStep)} $combinedDir", arrow, fStep, rStep))
+                        possibleMoves.add(
+                            MoveInstruction(
+                                templateRes = R.string.move_template_diagonal,
+                                args = listOf(
+                                    Math.abs(rStep),
+                                    getDirectionRes(rStep, true), // Вертикаль
+                                    getDirectionRes(fStep, false) // Горизонталь
+                                ),
+                                icon = getArrowIcon(fStep, rStep),
+                                df = fStep, dr = rStep,
+                                text = "Diagonal Move" // Legacy placeholder
+                            )
+                        )
                     }
                 }
             }
         }
     }
 
-    // HARD (Knight)
+    // HARD (Конь)
     if (difficulty == WalkerDifficulty.HARD) {
         val knightOffsets = listOf(Pair(1, 2), Pair(2, 1), Pair(2, -1), Pair(1, -2), Pair(-1, -2), Pair(-2, -1), Pair(-2, 1), Pair(-1, 2))
         knightOffsets.forEach { (fStep, rStep) ->
             if ((current.file + fStep) in files && (current.rank + rStep) in ranks) {
-                val vDir = if (rStep > 0) "Up" else "Down"; val hDir = if (fStep > 0) "Right" else "Left"
-                possibleMoves.add(MoveInstruction("${Math.abs(rStep)} $vDir, ${Math.abs(fStep)} $hDir", "♞", fStep, rStep))
+                possibleMoves.add(
+                    MoveInstruction(
+                        templateRes = R.string.move_template_knight,
+                        args = listOf(
+                            Math.abs(rStep), getDirectionRes(rStep, true),
+                            Math.abs(fStep), getDirectionRes(fStep, false)
+                        ),
+                        icon = "♞",
+                        df = fStep, dr = rStep,
+                        text = "Knight Move" // Legacy placeholder
+                    )
+                )
             }
         }
     }
     return possibleMoves.random()
 }
 
-// --- Логика для режима Knight Vision (НОВОЕ) ---
+// --- Логика для режима Knight Vision ---
 
-// Перечисление фигур с привязкой к ID ресурсов
 enum class ChessPiece(val resId: Int, val maxCount: Int = 8) {
     PAWN(R.drawable.pawn),
     ROOK(R.drawable.rook),
     KNIGHT(R.drawable.knight),
     BISHOP(R.drawable.bishop),
     QUEEN(R.drawable.queen),
-    KING(R.drawable.king, 1) // Король может быть только один
+    KING(R.drawable.king, 1)
 }
 
-// Генерация случайных препятствий
 fun generateObstacles(count: Int, excludeSquare: Square): Map<Square, ChessPiece> {
     val obstacles = mutableMapOf<Square, ChessPiece>()
     val availableSquares = mutableListOf<Square>()
 
-    // Создаем пул всех клеток, кроме стартовой
     for (f in 'a'..'h') {
         for (r in 1..8) {
             val sq = Square(f, r)
             if (sq != excludeSquare) availableSquares.add(sq)
         }
     }
-    availableSquares.shuffle() // Перемешиваем клетки
+    availableSquares.shuffle()
 
     val pieceCounts = mutableMapOf<ChessPiece, Int>()
-
-    // Расставляем фигуры
     var placed = 0
     var attempt = 0
-    // Защита от бесконечного цикла (на всякий случай)
     while (placed < count && attempt < availableSquares.size) {
         val square = availableSquares[attempt]
         val piece = ChessPiece.values().random()
@@ -288,7 +343,6 @@ fun generateObstacles(count: Int, excludeSquare: Square): Map<Square, ChessPiece
     return obstacles
 }
 
-// Генерация инструкции для коня (только конь!), избегая препятствий
 fun getKnightInstruction(current: Square, obstacles: Map<Square, ChessPiece>): MoveInstruction {
     val possibleMoves = mutableListOf<MoveInstruction>()
     val files = 'a'..'h'; val ranks = 1..8
@@ -302,20 +356,26 @@ fun getKnightInstruction(current: Square, obstacles: Map<Square, ChessPiece>): M
         val targetRank = current.rank + rStep
         val targetSq = Square(targetFile, targetRank)
 
-        // Проверяем: в пределах доски И не в препятствии
         if (targetFile in files && targetRank in ranks && !obstacles.containsKey(targetSq)) {
-            val vDir = if (rStep > 0) "Up" else "Down"
-            val hDir = if (fStep > 0) "Right" else "Left"
-            possibleMoves.add(MoveInstruction("${Math.abs(rStep)} $vDir, ${Math.abs(fStep)} $hDir", "♞", fStep, rStep))
+            possibleMoves.add(
+                MoveInstruction(
+                    templateRes = R.string.move_template_knight,
+                    args = listOf(
+                        Math.abs(rStep), getDirectionRes(rStep, true),
+                        Math.abs(fStep), getDirectionRes(fStep, false)
+                    ),
+                    icon = "♞",
+                    df = fStep, dr = rStep,
+                    text = "Knight Move"
+                )
+            )
         }
     }
 
-    // Если ходов нет (зажат), возвращаем специальный маркер (экран игры должен это обработать)
     return if (possibleMoves.isNotEmpty()) possibleMoves.random()
-    else MoveInstruction("TRAPPED", "X", 0, 0)
+    else MoveInstruction(0, emptyList(), "X", 0, 0, "TRAPPED") // Сохраняем "TRAPPED" в text для логики
 }
 
-// Получить все валидные прыжки коня из клетки (для фазы угадывания)
 fun getValidKnightJumps(from: Square, obstacles: Map<Square, ChessPiece>): List<Square> {
     val valid = mutableListOf<Square>()
     val files = 'a'..'h'; val ranks = 1..8
@@ -334,4 +394,27 @@ fun getValidKnightJumps(from: Square, obstacles: Map<Square, ChessPiece>): List<
         }
     }
     return valid
+}
+
+// --- НОВЫЙ ХЕЛПЕР ДЛЯ UI ---
+// Позволяет получить переведенный текст инструкции прямо в Composable
+@Composable
+fun resolveInstructionText(instruction: MoveInstruction): String {
+    if (instruction.text == "TRAPPED") return "TRAPPED" // Fallback для тех. кейса
+
+    // Преобразуем список аргументов: если это Int (ресурс строки), берем строку, иначе оставляем как есть
+    val resolvedArgs = instruction.args.map { arg ->
+        if (arg is Int && arg > 1000000) { // Простая эвристика, что это ID ресурса
+            stringResource(id = arg)
+        } else {
+            arg
+        }
+    }.toTypedArray()
+
+    // Форматируем строку по шаблону
+    return if (instruction.templateRes != 0) {
+        stringResource(id = instruction.templateRes, formatArgs = resolvedArgs)
+    } else {
+        instruction.text // Fallback
+    }
 }

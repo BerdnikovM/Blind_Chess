@@ -7,7 +7,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource // <--- ВАЖНО
 import androidx.compose.ui.unit.dp
+import com.Goldy.blindchess.R // <--- ВАЖНО
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -15,10 +17,10 @@ fun SpeedColorsScreen(onBack: () -> Unit, onModeSelected: (String) -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("SPEED COLORS") },
+                title = { Text(stringResource(R.string.protocol_speed_colors).uppercase()) }, // <-- ЗАМЕНА
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back)) // <-- ЗАМЕНА
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -37,11 +39,11 @@ fun SpeedColorsScreen(onBack: () -> Unit, onModeSelected: (String) -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(onClick = { onModeSelected("zen") }, modifier = Modifier.fillMaxWidth(0.8f)) {
-                Text(text = "Zen", modifier = Modifier.padding(8.dp))
+                Text(text = stringResource(R.string.sc_zen), modifier = Modifier.padding(8.dp)) // <-- ЗАМЕНА
             }
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { onModeSelected("blitz") }, modifier = Modifier.fillMaxWidth(0.8f)) {
-                Text(text = "Blitz", modifier = Modifier.padding(8.dp))
+                Text(text = stringResource(R.string.sc_blitz), modifier = Modifier.padding(8.dp)) // <-- ЗАМЕНА
             }
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -49,7 +51,7 @@ fun SpeedColorsScreen(onBack: () -> Unit, onModeSelected: (String) -> Unit) {
                 onClick = { onModeSelected("tutorial") },
                 modifier = Modifier.fillMaxWidth(0.8f)
             ) {
-                Text(text = "Tutorial", modifier = Modifier.padding(8.dp))
+                Text(text = stringResource(R.string.tutorial), modifier = Modifier.padding(8.dp)) // <-- ЗАМЕНА
             }
         }
     }

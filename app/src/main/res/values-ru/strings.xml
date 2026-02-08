@@ -1,0 +1,104 @@
+<resources>
+    <string name="app_name">Blind Chess</string>
+
+    <string name="main_title">BLIND CHESS</string>
+    <string name="btn_start">НАЧАТЬ ТРЕНИРОВКУ</string>
+    <string name="btn_database">Личное дело</string>
+    <string name="btn_settings">НАСТРОЙКИ</string>
+
+    <string name="select_protocol_title">ВЫБОР ПРОТОКОЛА</string>
+    <string name="protocol_speed_colors">Светотень</string>
+    <string name="protocol_the_walker">Странник</string>
+    <string name="protocol_knight_vision">Ход Конём</string>
+    <string name="protocol_desc_speed">Видение и Реакция</string>
+    <string name="protocol_desc_walker">Расчет траекторий</string>
+    <string name="protocol_desc_knight">Память и маневры</string>
+
+    <string name="tutorial">Обучение</string>
+    <string name="back">Назад</string>
+    <string name="wave">Волна</string>
+    <string name="round">Раунд</string>
+    <string name="speed">Скорость</string>
+    <string name="game_over">ИГРА ОКОНЧЕНА</string>
+    <string name="try_again">Еще раз</string>
+    <string name="next">ДАЛЕЕ</string>
+    <string name="play">ИГРАТЬ</string>
+    <string name="got_it">ПОНЯТНО</string>
+
+    <string name="sc_zen">Режим Дзен</string>
+    <string name="sc_blitz">Блиц Режим</string>
+    <string name="sc_white">БЕЛОЕ</string>
+    <string name="sc_black">ЧЕРНОЕ</string>
+    <string name="sc_streak">Серия</string>
+    <string name="sc_best">Лучшая серия</string>
+    <string name="sc_score">Счет</string>
+    <string name="sc_time">Время</string>
+    <string name="sc_success">ВЕРНО</string>
+    <string name="sc_failure">ОШИБКА</string>
+
+    <string name="dir_up">Вверх</string>
+    <string name="dir_down">Вниз</string>
+    <string name="dir_left">Влево</string>
+    <string name="dir_right">Вправо</string>
+
+    <string name="move_template_simple">%1$d %2$s</string>
+    <string name="move_template_diagonal">%1$d %2$s-%3$s</string>
+    <string name="move_template_knight">%1$d %2$s, %3$d %4$s</string>
+
+    <string name="walker_easy">Курсант</string>
+    <string name="walker_medium">Мастер</string>
+    <string name="walker_hard">Гроссмейстер</string>
+    <string name="walker_start">Старт: %s</string>
+    <string name="walker_click_target">Нажмите на целевую клетку</string>
+    <string name="walker_time_sped_up">УСКОРЕНИЕ!</string>
+    <string name="walker_choose_difficulty">Выберите сложность</string>
+    <string name="walker_desc_easy">Только Ладья (↕ ↔)</string>
+    <string name="walker_desc_medium">Ладья + Слон (↗ ↘)</string>
+    <string name="walker_desc_hard">Все ходы + Конь (♞)</string>
+    <string name="walker_desc_tutorial">Изучить правила</string>
+    <string name="how_to_play">Как играть</string>
+    <string name="tut_walker_ex_move">2 Вверх</string>
+
+    <string name="kv_static">Слепая зона</string>
+    <string name="kv_memorize">Запомните Препятствия</string>
+    <string name="kv_memorize_timer">Запоминание: %dс</string>
+    <string name="kv_click_jumps">Отметьте все ходы!</string>
+    <string name="kv_found">Найдено: %1$d/%2$d</string>
+    <string name="kv_memorize_ex">Запомни!</string>
+    <string name="kv_start_ex">Старт: d2</string>
+    <string name="kv_move_ex">2 Вверх, 1 Вправо</string>
+
+    <string name="db_title">Ваши рекорды</string>
+    <string name="db_sc_zen_best">Рекорд Дзен</string>
+    <string name="db_sc_blitz_high">Рекорд Блиц</string>
+    <string name="db_walker_best">Странник (Лучшая Волна)</string>
+    <string name="db_kv_best">Ход конём (Лучшая Волна)</string>
+
+    <string name="settings_title">НАСТРОЙКИ</string>
+    <string name="settings_language">Язык</string>
+    <string name="lang_en">English</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_zh">中文 (Chinese)</string>
+
+    <string name="tut_sc_step_1">Добро пожаловать в режим "Светотень" Это отличный тренажер для развития шахматного зрения.</string>
+    <string name="tut_sc_step_2">В центре экрана вы увидите координаты клетки, например, c3.</string>
+    <string name="tut_sc_step_3">Ваша задача — как можно быстрее определить цвет этой клетки: белый или черный.</string>
+    <string name="tut_sc_step_4">Используйте кнопки для ответа. Попробуйте нажать их сейчас!</string>
+    <string name="tut_sc_step_5">В режиме Дзен тренируйтесь без спешки, а в Блице ставьте рекорды на время.</string>
+    <string name="tut_sc_step_6">Готовы начать тренировку? Удачи!</string>
+    <string name="tut_walker_step_1">Добро пожаловать в режим "Странник"! Этот режим тренирует визуализацию ходов.</string>
+    <string name="tut_walker_step_2">Сначала вы увидите стартовую клетку. Например, \'c3\'. Запомните её!</string>
+    <string name="tut_walker_step_3">Затем появятся инструкции. Например: \'2 Вверх\'.</string>
+    <string name="tut_walker_step_4">Ваша цель — следовать этим ходам в уме, начиная с \'c3\'.</string>
+    <string name="tut_walker_step_5">Если начать с c3 и пойти на 2 вверх... вы окажетесь на c5.</string>
+    <string name="tut_walker_step_6">После инструкций появится пустая доска. Нажмите на финальную клетку (c5).</string>
+    <string name="tut_walker_step_7">У вас 3 жизни. Ошибка стоит жизни. Игра ускоряется с каждой волной!</string>
+    <string name="tut_walker_step_8">Готовы? Поехали!</string>
+    <string name="tut_kv_step_1">Добро пожаловать в режим "Ход конем! Этот режим тренирует расчет и память на ходы коня.</string>
+    <string name="tut_kv_step_2">Фаза 1: Запоминание. Вы увидите препятствия на доске (например, d6 и f6). Запомните их!</string>
+    <string name="tut_kv_step_3">Фаза 2: Путь. Вы получите стартовую клетку (например, d2) и инструкцию хода коня.</string>
+    <string name="tut_kv_step_4">Следуйте по пути в уме! Если начать с d2 и пойти \'2 Вверх, 1 Вправо\', вы окажетесь на e4.</string>
+    <string name="tut_kv_step_5">Фаза 3: Атака. С финальной позиции (e4) отметьте ВСЕ клетки, куда может прыгнуть конь.</string>
+    <string name="tut_kv_step_6">Осторожно! Избегайте препятствий, которые вы запомнили ранее (d6, f6). Удачи!</string>
+
+</resources>

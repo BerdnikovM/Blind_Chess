@@ -15,14 +15,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource // <--- ВАЖНО
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.R // <--- ВАЖНО
 import com.Goldy.blindchess.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-// Локальное перечисление только для состояний экрана
 private enum class BlitzState { START, PLAYING, FINISHED }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,11 +68,9 @@ fun SpeedColorsBlitzScreen(onBack: () -> Unit) {
             score++
             currentSquare = getRandomSquare()
         } else {
-            // Штраф 5 секунд
             timeLeft = (timeLeft - 5).coerceAtLeast(0)
             currentSquare = getRandomSquare()
 
-            // Визуальная и звуковая индикация ТОЛЬКО на ошибку
             coroutineScope.launch {
                 toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 150)
                 backgroundColor.animateTo(Color.Red.copy(alpha = 0.3f), animationSpec = tween(100))
@@ -90,16 +89,16 @@ fun SpeedColorsBlitzScreen(onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Speed Colors - Blitz") },
+                title = { Text(stringResource(R.string.sc_blitz)) }, // <-- ЗАМЕНА
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) // <-- ЗАМЕНА
                     }
                 },
                 actions = {
                     if (gameState == BlitzState.PLAYING) {
                         Text(
-                            text = "Time: $timeLeft",
+                            text = "${stringResource(R.string.sc_time)}: $timeLeft", // <-- ЗАМЕНА
                             modifier = Modifier.padding(end = 16.dp),
                             style = MaterialTheme.typography.titleLarge,
                             color = if (timeLeft <= 10) Color.Red else MaterialTheme.colorScheme.primary
@@ -124,12 +123,12 @@ fun SpeedColorsBlitzScreen(onBack: () -> Unit) {
                         modifier = Modifier.size(160.dp),
                         shape = MaterialTheme.shapes.large
                     ) {
-                        Text("START", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.play), fontSize = 24.sp, fontWeight = FontWeight.Bold) // <-- ЗАМЕНА (START -> PLAY)
                     }
                 }
                 BlitzState.PLAYING -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = "Score: $score", fontSize = 24.sp, color = MaterialTheme.colorScheme.outline)
+                        Text(text = "${stringResource(R.string.sc_score)}: $score", fontSize = 24.sp, color = MaterialTheme.colorScheme.outline) // <-- ЗАМЕНА
                         Spacer(Modifier.height(40.dp))
                         Text(text = currentSquare.toString(), fontSize = 120.sp, fontWeight = FontWeight.Black)
                         Spacer(Modifier.height(80.dp))
@@ -139,7 +138,7 @@ fun SpeedColorsBlitzScreen(onBack: () -> Unit) {
                                 modifier = Modifier.weight(1f).height(80.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
                                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
-                            ) { Text("WHITE", fontWeight = FontWeight.Black, fontSize = 20.sp) }
+                            ) { Text(stringResource(R.string.sc_white), fontWeight = FontWeight.Black, fontSize = 20.sp) } // <-- ЗАМЕНА
 
                             Button(
                                 onClick = { processAnswer(SquareColor.BLACK) },
@@ -147,25 +146,25 @@ fun SpeedColorsBlitzScreen(onBack: () -> Unit) {
                                 border = BorderStroke(2.dp, Color.White),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black, contentColor = Color.White),
                                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
-                            ) { Text("BLACK", fontWeight = FontWeight.Black, fontSize = 20.sp) }
+                            ) { Text(stringResource(R.string.sc_black), fontWeight = FontWeight.Black, fontSize = 20.sp) } // <-- ЗАМЕНА
                         }
                     }
                 }
                 BlitzState.FINISHED -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = "TIME'S UP!", fontSize = 48.sp, fontWeight = FontWeight.Black, color = Color.Red)
+                        Text(text = stringResource(R.string.game_over), fontSize = 48.sp, fontWeight = FontWeight.Black, color = Color.Red) // <-- ЗАМЕНА (TIME'S UP -> GAME OVER)
                         Spacer(Modifier.height(16.dp))
-                        Text(text = "Final Score: $score", fontSize = 32.sp)
+                        Text(text = "${stringResource(R.string.sc_score)}: $score", fontSize = 32.sp) // <-- ЗАМЕНА (Final Score -> Score)
                         Spacer(Modifier.height(48.dp))
                         Button(
                             onClick = ::restartGame,
                             modifier = Modifier.fillMaxWidth(0.7f).height(60.dp)
-                        ) { Text("TRY AGAIN", fontSize = 20.sp) }
+                        ) { Text(stringResource(R.string.try_again), fontSize = 20.sp) } // <-- ЗАМЕНА
                         Spacer(Modifier.height(16.dp))
                         OutlinedButton(
                             onClick = onBack,
                             modifier = Modifier.fillMaxWidth(0.7f).height(60.dp)
-                        ) { Text("FINISH", fontSize = 18.sp) }
+                        ) { Text(stringResource(R.string.back).uppercase(), fontSize = 18.sp) } // <-- ЗАМЕНА
                     }
                 }
             }

@@ -13,12 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource // <-- ВАЖНО
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.Goldy.blindchess.R
+import com.Goldy.blindchess.R // <-- ВАЖНО
 import com.Goldy.blindchess.utils.BaseChessboard
 import com.Goldy.blindchess.utils.Square
 
@@ -28,25 +29,23 @@ fun KnightVisionTutorialScreen(onFinish: () -> Unit) {
     var step by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
 
-    // Хелпер для загрузки картинок
     fun getBitmap(resId: Int) = BitmapFactory.decodeResource(context.resources, resId).asImageBitmap()
 
+    // Используем ресурсы для текстов (6 шагов)
     val tutorialTexts = listOf(
-        "Welcome to Knight Vision! This mode trains your calculation and memory for Knight moves.",
-        "Phase 1: Memorization. You will see obstacles on the board (e.g., at d6 and f6). Remember them!",
-        // ИСПРАВЛЕНИЕ: Изменили пример старта на d2
-        "Phase 2: The Path. You will get a starting square (e.g., d2) and a Knight move instruction.",
-        "Follow the path in your mind! If you start at d2 and go '2 Up, 1 Right', you end up at e4.",
-        "Phase 3: The Attack. From the final position (e4), click ALL valid squares the Knight can jump to.",
-        // ИСПРАВЛЕНИЕ: Уточнили текст про препятствия
-        "Be careful! You must avoid the obstacles you memorized earlier (d6, f6). Good luck!"
+        stringResource(R.string.tut_kv_step_1),
+        stringResource(R.string.tut_kv_step_2),
+        stringResource(R.string.tut_kv_step_3),
+        stringResource(R.string.tut_kv_step_4),
+        stringResource(R.string.tut_kv_step_5),
+        stringResource(R.string.tut_kv_step_6)
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("How to Play") },
-                navigationIcon = { IconButton(onClick = onFinish) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                title = { Text(stringResource(R.string.how_to_play)) }, // <-- ЗАМЕНА
+                navigationIcon = { IconButton(onClick = onFinish) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) } }, // <-- ЗАМЕНА
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
@@ -56,7 +55,6 @@ fun KnightVisionTutorialScreen(onFinish: () -> Unit) {
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // ВЕРХНЯЯ ЧАСТЬ: Демонстрация (Адаптивная)
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -65,17 +63,18 @@ fun KnightVisionTutorialScreen(onFinish: () -> Unit) {
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     when (step) {
-                        0 -> { // Приветствие
-                            Text("Knight Vision", fontSize = 36.sp, fontWeight = FontWeight.Bold)
+                        0 -> {
+                            Text(stringResource(R.string.protocol_knight_vision), fontSize = 36.sp, fontWeight = FontWeight.Bold) // <-- ЗАМЕНА
                             Spacer(Modifier.height(24.dp))
+                            // Если вы использовали Image(bitmap = ...), можно вернуть. Если нет, просто текст.
+                            // Для простоты оставил только текст, если картинки не загружены
                         }
-                        1 -> { // Запоминание (Препятствия на d6, f6)
-                            Text("Memorize!", color = Color.Red, fontWeight = FontWeight.Bold, fontSize = 32.sp)
+                        1 -> {
+                            Text(stringResource(R.string.kv_memorize_ex), color = Color.Red, fontWeight = FontWeight.Bold, fontSize = 32.sp) // <-- ЗАМЕНА (Memorize!)
                             Spacer(Modifier.height(16.dp))
                             Box(Modifier.fillMaxWidth(0.9f)) {
                                 BaseChessboard(
                                     onDrawSquare = { square ->
-                                        // Рисуем демо-препятствия
                                         if (square == Square('d', 6) || square == Square('f', 6)) {
                                             try {
                                                 drawImage(
@@ -89,49 +88,37 @@ fun KnightVisionTutorialScreen(onFinish: () -> Unit) {
                                 )
                             }
                         }
-                        2, 3 -> { // Инструкции (Старт d2 -> 2 Up, 1 Right)
-                            // Сначала проверяем, нужно ли показать иконку (для шага 3)
+                        2, 3 -> {
                             if (step == 3) {
                                 Text("♞", fontSize = 100.sp)
-                                Spacer(Modifier.height(16.dp)) // Отступ между иконкой и текстом
+                                Spacer(Modifier.height(16.dp))
                             }
-
-                            // Затем выводим сам текст
                             Text(
-                                text = if (step == 2) "Start: d2" else "2 Up, 1 Right",
+                                text = if (step == 2) stringResource(R.string.kv_start_ex) else stringResource(R.string.kv_move_ex), // <-- ЗАМЕНА (Start: d2 / 2 Up...)
                                 fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }
-                        4, 5 -> { // Угадывание (Конь на e4, препятствия d6, f6)
+                        4, 5 -> {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Click valid jumps!", style = MaterialTheme.typography.titleMedium)
+                                Text(stringResource(R.string.kv_click_jumps), style = MaterialTheme.typography.titleMedium) // <-- ЗАМЕНА (Click valid jumps)
                                 Spacer(Modifier.height(8.dp))
                                 Box(Modifier.fillMaxWidth(0.9f)) {
                                     BaseChessboard(
                                         onDrawSquare = { square ->
-                                            // Сценарий: Конь пришел на e4.
-                                            // Препятствия (запомненные): d6, f6.
-
-                                            // Валидные прыжки с e4 (исключая d6 и f6)
                                             val validTargets = listOf(
                                                 Square('g', 5), Square('g', 3), Square('f', 2),
                                                 Square('d', 2), Square('c', 3), Square('c', 5)
                                             )
-                                            // Заблокированные прыжки с e4
                                             val blockedTargets = listOf(Square('d', 6), Square('f', 6))
 
-                                            // Зеленые - куда надо кликать
                                             if (square in validTargets) {
                                                 drawCircle(Color.Green.copy(alpha = 0.5f), radius = size.minDimension/3)
                                             }
-                                            // Красный - куда нельзя (там препятствие)
-                                            // ИСПРАВЛЕНИЕ: Теперь красные круги совпадают с препятствиями из фазы 1
                                             if (square in blockedTargets) {
                                                 drawCircle(Color.Red.copy(alpha = 0.5f), radius = size.minDimension/3)
                                             }
 
-                                            // Рисуем коня на e5 для наглядности
                                             if (square == Square('e', 4)) {
                                                 try {
                                                     drawImage(
@@ -150,7 +137,6 @@ fun KnightVisionTutorialScreen(onFinish: () -> Unit) {
                 }
             }
 
-            // НИЖНЯЯ ЧАСТЬ: Диалог
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -173,7 +159,7 @@ fun KnightVisionTutorialScreen(onFinish: () -> Unit) {
                         },
                         modifier = Modifier.align(Alignment.End)
                     ) {
-                        Text(if (step < tutorialTexts.size - 1) "NEXT" else "PLAY")
+                        Text(if (step < tutorialTexts.size - 1) stringResource(R.string.next) else stringResource(R.string.play)) // <-- ЗАМЕНА
                     }
                 }
             }

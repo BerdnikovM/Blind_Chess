@@ -13,9 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.R
 import com.Goldy.blindchess.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -37,17 +39,14 @@ fun TheWalkerScreen(difficulty: WalkerDifficulty, onBack: () -> Unit) {
     var currentInstructionIdx by remember { mutableIntStateOf(-1) }
     var showInstruction by remember { mutableStateOf(false) }
 
-    // Состояния для визуального фидбека
     var clickedSquare by remember { mutableStateOf<Square?>(null) }
     var feedbackColor by remember { mutableStateOf(Color.Transparent) }
-    var isProcessing by remember { mutableStateOf(false) } // Блокировка кликов во время анимации
+    var isProcessing by remember { mutableStateOf(false) }
 
     val timePerStep = (2.0 - (wave - 1) * 0.1).coerceAtLeast(0.5)
 
-    // Звуки и корутины
     val coroutineScope = rememberCoroutineScope()
     val toneGenerator = remember { ToneGenerator(AudioManager.STREAM_MUSIC, 100) }
-    // Инициализируем ScoreManager
     val context = androidx.compose.ui.platform.LocalContext.current
     val scoreManager = remember { ScoreManager(context) }
 
@@ -67,7 +66,6 @@ fun TheWalkerScreen(difficulty: WalkerDifficulty, onBack: () -> Unit) {
         currentInstructionIdx = -1
         gameState = WalkerState.COUNTDOWN
 
-        // Сброс фидбека
         clickedSquare = null
         isProcessing = false
     }
@@ -109,8 +107,9 @@ fun TheWalkerScreen(difficulty: WalkerDifficulty, onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("The Walker - ${difficulty.name}") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                // Для простоты покажем просто "The Walker", т.к. difficulty.name не переведен
+                title = { Text(stringResource(R.string.protocol_the_walker)) },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) } },
                 actions = {
                     Row(Modifier.padding(end = 16.dp)) {
                         repeat(lives) { Icon(Icons.Default.Favorite, null, tint = Color.Red) }
@@ -123,7 +122,7 @@ fun TheWalkerScreen(difficulty: WalkerDifficulty, onBack: () -> Unit) {
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Wave $wave", fontWeight = FontWeight.Bold)
+                    Text("${stringResource(R.string.wave)} $wave", fontWeight = FontWeight.Bold)
                     Row {
                         val roundsInWave = if (wave == 1) 3 else 5
                         repeat(roundsInWave) { i ->
@@ -131,32 +130,37 @@ fun TheWalkerScreen(difficulty: WalkerDifficulty, onBack: () -> Unit) {
                         }
                     }
                 }
-                Text("Speed: ${"%.1f".format(timePerStep)}s", style = MaterialTheme.typography.labelSmall)
+                Text("${stringResource(R.string.speed)}: ${"%.1f".format(timePerStep)}s", style = MaterialTheme.typography.labelSmall)
             }
 
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 when (gameState) {
                     WalkerState.COUNTDOWN -> {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            if (round == 1 && wave > 1) Text("TIME SPED UP!", color = Color.Red, fontWeight = FontWeight.Bold)
+                            if (round == 1 && wave > 1) Text(stringResource(R.string.walker_time_sped_up), color = Color.Red, fontWeight = FontWeight.Bold)
                             Text("$countdown", fontSize = 80.sp, fontWeight = FontWeight.Black)
                         }
                     }
                     WalkerState.START_SQUARE -> {
-                        Text("Start: ${startSquare}", fontSize = 60.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.walker_start, startSquare.toString()), fontSize = 60.sp, fontWeight = FontWeight.Bold)
                     }
                     WalkerState.INSTRUCTIONS -> {
                         if (showInstruction && currentInstructionIdx < instructions.size) {
                             val move = instructions[currentInstructionIdx]
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(move.icon, fontSize = 100.sp)
-                                Text(move.text, fontSize = 40.sp, fontWeight = FontWeight.Medium)
+                                // ИСПРАВЛЕНИЕ: Используем функцию resolveInstructionText для перевода
+                                Text(
+                                    text = resolveInstructionText(move),
+                                    fontSize = 40.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
                             }
                         }
                     }
                     WalkerState.GUESSING -> {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Click the target square", style = MaterialTheme.typography.titleMedium)
+                            Text(stringResource(R.string.walker_click_target), style = MaterialTheme.typography.titleMedium)
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Box(Modifier.fillMaxWidth(0.95f)) {
@@ -197,8 +201,6 @@ fun TheWalkerScreen(difficulty: WalkerDifficulty, onBack: () -> Unit) {
                                             } else {
                                                 lives--
                                                 if (lives <= 0) {
-                                                    // 2. СОХРАНЯЕМ РЕКОРД ПРИ ПРОИГРЫШЕ
-                                                    // Сохраняем текущую волну (wave)
                                                     scoreManager.saveWalkerHighScore(difficulty, wave)
                                                     gameState = WalkerState.GAME_OVER
                                                 } else {
@@ -213,9 +215,9 @@ fun TheWalkerScreen(difficulty: WalkerDifficulty, onBack: () -> Unit) {
                     }
                     WalkerState.GAME_OVER -> {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("GAME OVER", fontSize = 40.sp, color = Color.Red, fontWeight = FontWeight.Bold)
-                            Text("Wave: $wave, Round: $round")
-                            Button(onClick = { lives = 3; wave = 1; round = 1; prepareRound() }) { Text("Try Again") }
+                            Text(stringResource(R.string.game_over), fontSize = 40.sp, color = Color.Red, fontWeight = FontWeight.Bold)
+                            Text("${stringResource(R.string.wave)}: $wave, ${stringResource(R.string.round)}: $round")
+                            Button(onClick = { lives = 3; wave = 1; round = 1; prepareRound() }) { Text(stringResource(R.string.try_again)) }
                         }
                     }
                 }

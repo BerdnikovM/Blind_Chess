@@ -1,3 +1,104 @@
 <resources>
     <string name="app_name">Blind Chess</string>
+
+    <string name="main_title">BLIND CHESS</string>
+    <string name="btn_start">START TRAINING</string>
+    <string name="btn_database">PERSONNEL DATABASE</string>
+    <string name="btn_settings">SETTINGS</string>
+
+    <string name="select_protocol_title">SELECT PROTOCOL</string>
+    <string name="protocol_speed_colors">Speed Colors</string>
+    <string name="protocol_the_walker">The Walker</string>
+    <string name="protocol_knight_vision">Knight Vision</string>
+    <string name="protocol_desc_speed">Vision &amp; Reaction</string>
+    <string name="protocol_desc_walker">Path Calculation</string>
+    <string name="protocol_desc_knight">Knight Patterns</string>
+
+    <string name="tutorial">Tutorial</string>
+    <string name="back">Back</string>
+    <string name="wave">Wave</string>
+    <string name="round">Round</string>
+    <string name="speed">Speed</string>
+    <string name="game_over">GAME OVER</string>
+    <string name="try_again">Try Again</string>
+    <string name="next">NEXT</string>
+    <string name="play">PLAY</string>
+    <string name="got_it">GOT IT</string>
+
+    <string name="sc_zen">Zen Mode</string>
+    <string name="sc_blitz">Blitz Mode</string>
+    <string name="sc_white">WHITE</string>
+    <string name="sc_black">BLACK</string>
+    <string name="sc_streak">Current Streak</string>
+    <string name="sc_best">Best Streak</string>
+    <string name="sc_score">Score</string>
+    <string name="sc_time">Time</string>
+    <string name="sc_success">SUCCESS</string>
+    <string name="sc_failure">FAILURE</string>
+
+    <string name="dir_up">Up</string>
+    <string name="dir_down">Down</string>
+    <string name="dir_left">Left</string>
+    <string name="dir_right">Right</string>
+
+    <string name="move_template_simple">%1$d %2$s</string>
+    <string name="move_template_diagonal">%1$d %2$s-%3$s</string>
+    <string name="move_template_knight">%1$d %2$s, %3$d %4$s</string>
+
+    <string name="walker_easy">Easy Mode</string>
+    <string name="walker_medium">Medium Mode</string>
+    <string name="walker_hard">Hard Mode</string>
+    <string name="walker_start">Start: %s</string> <string name="walker_click_target">Click the target square</string>
+    <string name="walker_time_sped_up">TIME SPED UP!</string>
+    <string name="walker_choose_difficulty">Choose Difficulty</string>
+    <string name="walker_desc_easy">Rook moves only (↕ ↔)</string>
+    <string name="walker_desc_medium">Rook + Bishop moves (↗ ↘)</string>
+    <string name="walker_desc_hard">All moves + Knight (♞)</string>
+    <string name="walker_desc_tutorial">Learn the rules</string>
+    <string name="how_to_play">How to Play</string>
+    <string name="tut_walker_ex_move">2 Up</string>
+
+    <string name="kv_static">Static Interference</string>
+    <string name="kv_memorize">Memorize Obstacles</string>
+    <string name="kv_memorize_timer">Memorize: %ds</string>
+    <string name="kv_click_jumps">Click all valid jumps!</string>
+    <string name="kv_found">Found: %1$d/%2$d</string>
+    <string name="kv_memorize_ex">Memorize!</string>
+    <string name="kv_start_ex">Start: d2</string>
+    <string name="kv_move_ex">2 Up, 1 Right</string>
+
+    <string name="db_title">PERSONNEL DATABASE</string>
+    <string name="db_sc_zen_best">Zen Best Streak</string>
+    <string name="db_sc_blitz_high">Blitz High Score</string>
+    <string name="db_walker_best">THE WALKER (Best Wave)</string>
+    <string name="db_kv_best">KNIGHT VISION (Best Wave)</string>
+
+    <string name="settings_title">SETTINGS</string>
+    <string name="settings_language">Language</string>
+    <string name="lang_en">English</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_zh">中文 (Chinese)</string>
+
+
+    <string name="tut_sc_step_1">Welcome to Speed Colors! This is a great trainer to develop your chess vision.</string>
+    <string name="tut_sc_step_2">In the center of the screen, you will see coordinates of a random square, for example, c3.</string>
+    <string name="tut_sc_step_3">Your task is to determine as quickly as possible the color of this square: white or black.</string>
+    <string name="tut_sc_step_4">Use these buttons to answer. Try pressing them now!</string>
+    <string name="tut_sc_step_5">In Zen mode, you can train without rushing, and in Blitz mode, you can compete for a time record.</string>
+    <string name="tut_sc_step_6">Ready to start training? Good luck!</string>
+    <string name="tut_walker_step_1">Welcome to The Walker! This mode trains your ability to visualize piece movement.</string>
+    <string name="tut_walker_step_2">First, you will see a starting square. For example, \'c3\'. Remember it!</string>
+    <string name="tut_walker_step_3">Then, you will see a series of instructions. For example: \'2 Up\'.</string>
+    <string name="tut_walker_step_4">Your goal is to follow these moves in your mind starting from \'c3\'.</string>
+    <string name="tut_walker_step_5">If you start at c3 and go 2 Up... you end up at c5.</string>
+    <string name="tut_walker_step_6">After instructions finish, an empty board appears. You must click the final square (c5).</string>
+    <string name="tut_walker_step_7">You have 3 lives. Each mistake costs a life. The game gets faster every wave!</string>
+    <string name="tut_walker_step_8">Ready to walk? Let\'s go!</string>
+    <string name="tut_kv_step_1">Welcome to Knight Vision! This mode trains your calculation and memory for Knight moves.</string>
+    <string name="tut_kv_step_2">Phase 1: Memorization. You will see obstacles on the board (e.g., at d6 and f6). Remember them!</string>
+    <string name="tut_kv_step_3">Phase 2: The Path. You will get a starting square (e.g., d2) and a Knight move instruction.</string>
+    <string name="tut_kv_step_4">Follow the path in your mind! If you start at d2 and go \'2 Up, 1 Right\', you end up at e4.</string>
+    <string name="tut_kv_step_5">Phase 3: The Attack. From the final position (e4), click ALL valid squares the Knight can jump to.</string>
+    <string name="tut_kv_step_6">Be careful! You must avoid the obstacles you memorized earlier (d6, f6). Good luck!</string>
+
 </resources>

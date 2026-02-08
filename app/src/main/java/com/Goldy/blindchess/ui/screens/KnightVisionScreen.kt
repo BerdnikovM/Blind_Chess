@@ -8,25 +8,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource // <-- ВАЖНО
 import androidx.compose.ui.unit.dp
+import com.Goldy.blindchess.R // <-- ВАЖНО
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KnightVisionScreen(
     onBack: () -> Unit,
-    onPlayClick: () -> Unit,     // Колбэк для игры
-    onTutorialClick: () -> Unit  // Колбэк для туториала (пока заглушка, но подготовим)
+    onPlayClick: () -> Unit,
+    onTutorialClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("KNIGHT VISION") },
+                title = { Text(stringResource(R.string.protocol_knight_vision).uppercase()) }, // <-- ЗАМЕНА
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back)) // <-- ЗАМЕНА
                     }
                 },
-                // Прозрачный фон
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
@@ -41,20 +42,20 @@ fun KnightVisionScreen(
         ) {
             // Кнопка Игры
             Button(
-                onClick = onPlayClick, // Вызываем колбэк
+                onClick = onPlayClick,
                 modifier = Modifier.fillMaxWidth(0.8f)
             ) {
-                Text(text = "Static interference", modifier = Modifier.padding(8.dp))
+                Text(text = stringResource(R.string.kv_static), modifier = Modifier.padding(8.dp)) // <-- ЗАМЕНА
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Кнопка Туториала
             OutlinedButton(
-                onClick = onTutorialClick, // <-- Должно быть так
+                onClick = onTutorialClick,
                 modifier = Modifier.fillMaxWidth(0.8f)
             ) {
-                Text(text = "Tutorial", modifier = Modifier.padding(8.dp))
+                Text(text = stringResource(R.string.tutorial), modifier = Modifier.padding(8.dp)) // <-- ЗАМЕНА
             }
         }
     }

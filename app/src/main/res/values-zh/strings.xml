@@ -1,0 +1,104 @@
+<resources>
+    <string name="app_name">盲棋训练</string>
+
+    <string name="main_title">盲棋训练</string>
+    <string name="btn_start">开始训练</string>
+    <string name="btn_database">个人数据</string>
+    <string name="btn_settings">设置</string>
+
+    <string name="select_protocol_title">选择协议</string>
+    <string name="protocol_speed_colors">极速色彩</string>
+    <string name="protocol_the_walker">行者模式</string>
+    <string name="protocol_knight_vision">骑士视野</string>
+    <string name="protocol_desc_speed">视觉与反应</string>
+    <string name="protocol_desc_walker">路径计算</string>
+    <string name="protocol_desc_knight">马的跳跃</string>
+
+    <string name="tutorial">教程</string>
+    <string name="back">返回</string>
+    <string name="wave">波次</string>
+    <string name="round">回合</string>
+    <string name="speed">速度</string>
+    <string name="game_over">游戏结束</string>
+    <string name="try_again">重试</string>
+    <string name="next">下一步</string>
+    <string name="play">开始</string>
+    <string name="got_it">明白了</string>
+
+    <string name="sc_zen">禅模式</string>
+    <string name="sc_blitz">闪电战</string>
+    <string name="sc_white">白</string>
+    <string name="sc_black">黑</string>
+    <string name="sc_streak">连胜</string>
+    <string name="sc_best">最佳连胜</string>
+    <string name="sc_score">得分</string>
+    <string name="sc_time">时间</string>
+    <string name="sc_success">成功</string>
+    <string name="sc_failure">失败</string>
+
+    <string name="dir_up">上</string>
+    <string name="dir_down">下</string>
+    <string name="dir_left">左</string>
+    <string name="dir_right">右</string>
+
+    <string name="move_template_simple">向%2$s %1$d</string>
+    <string name="move_template_diagonal">向%2$s-%3$s %1$d</string>
+    <string name="move_template_knight">向%2$s %1$d, 向%4$s %3$d</string>
+
+    <string name="walker_easy">简单</string>
+    <string name="walker_medium">中等</string>
+    <string name="walker_hard">困难</string>
+    <string name="walker_start">起点: %s</string>
+    <string name="walker_click_target">点击目标格</string>
+    <string name="walker_time_sped_up">加速!</string>
+    <string name="walker_choose_difficulty">选择难度</string>
+    <string name="walker_desc_easy">仅车移动 (↕ ↔)</string>
+    <string name="walker_desc_medium">车 + 象移动 (↗ ↘)</string>
+    <string name="walker_desc_hard">所有移动 + 马 (♞)</string>
+    <string name="walker_desc_tutorial">学习规则</string>
+    <string name="how_to_play">怎么玩</string>
+    <string name="tut_walker_ex_move">向上 2</string>
+
+    <string name="kv_static">静态干扰</string>
+    <string name="kv_memorize">记住障碍物</string>
+    <string name="kv_memorize_timer">记忆: %d秒</string>
+    <string name="kv_click_jumps">点击所有跳跃点!</string>
+    <string name="kv_found">已找到: %1$d/%2$d</string>
+    <string name="kv_memorize_ex">记住！</string>
+    <string name="kv_start_ex">起点: d2</string>
+    <string name="kv_move_ex">向上 2，向右 1</string>
+
+    <string name="db_title">个人档案</string>
+    <string name="db_sc_zen_best">色彩连胜记录</string>
+    <string name="db_sc_blitz_high">闪电战最高分</string>
+    <string name="db_walker_best">行者模式 (最高波次)</string>
+    <string name="db_kv_best">骑士视野 (最高波次)</string>
+
+    <string name="settings_title">设置</string>
+    <string name="settings_language">语言</string>
+    <string name="lang_en">English</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_zh">中文 (Chinese)</string>
+
+    <string name="tut_sc_step_1">欢迎来到极速色彩！这是训练棋盘视觉的绝佳工具。</string>
+    <string name="tut_sc_step_2">屏幕中央会显示随机方格的坐标，例如 c3。</string>
+    <string name="tut_sc_step_3">你的任务是尽快判断该方格的颜色：白色或黑色。</string>
+    <string name="tut_sc_step_4">使用下方按钮回答。现在试着按一下！</string>
+    <string name="tut_sc_step_5">禅模式下可以轻松练习，闪电战模式下则可以挑战时间记录。</string>
+    <string name="tut_sc_step_6">准备好开始训练了吗？祝你好运！</string>
+    <string name="tut_walker_step_1">欢迎来到行者模式！此模式训练你的棋子移动可视化能力。</string>
+    <string name="tut_walker_step_2">首先，你会看到一个起始方格。例如 \'c3\'。记住它！</string>
+    <string name="tut_walker_step_3">然后，你会看到一系列指令。例如：\'向上 2\'。</string>
+    <string name="tut_walker_step_4">你的目标是从 \'c3\' 开始在脑海中跟随这些移动。</string>
+    <string name="tut_walker_step_5">如果你从 c3 开始向上走 2 格... 你最终会到达 c5。</string>
+    <string name="tut_walker_step_6">指令结束后，会出现空棋盘。点击最终方格 (c5)。</string>
+    <string name="tut_walker_step_7">你有 3 条命。每次错误扣一条命。游戏每一波都会变快！</string>
+    <string name="tut_walker_step_8">准备好出发了吗？走吧！</string>
+    <string name="tut_kv_step_1">欢迎来到骑士视野！此模式训练马的移动计算和记忆。</string>
+    <string name="tut_kv_step_2">阶段 1：记忆。你会看到棋盘上的障碍物（例如 d6 和 f6）。记住它们！</string>
+    <string name="tut_kv_step_3">阶段 2：路径。你会得到一个起始方格（例如 d2）和马的移动指令。</string>
+    <string name="tut_kv_step_4">在脑海中跟随路径！如果你从 d2 开始，\'向上 2，向右 1\'，你最终会到达 e4。</string>
+    <string name="tut_kv_step_5">阶段 3：攻击。从最终位置 (e4) 点击马可以跳到的所有有效方格。</string>
+    <string name="tut_kv_step_6">小心！必须避开你之前记住的障碍物 (d6, f6)。祝你好运！</string>
+
+</resources>

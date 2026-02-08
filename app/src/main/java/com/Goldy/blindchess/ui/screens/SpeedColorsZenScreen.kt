@@ -17,9 +17,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource // <--- ВАЖНО
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Goldy.blindchess.R // <--- ВАЖНО
 import com.Goldy.blindchess.utils.*
 import kotlinx.coroutines.launch
 
@@ -76,11 +78,11 @@ fun SpeedColorsZenScreen(onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Speed Colors - Zen") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                title = { Text(stringResource(R.string.sc_zen)) }, // <-- ЗАМЕНА
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) } }, // <-- ЗАМЕНА
                 actions = {
                     Text(
-                        text = "Streak: $streak",
+                        text = "${stringResource(R.string.sc_streak)}: $streak", // <-- ЗАМЕНА
                         modifier = Modifier.padding(end = 16.dp),
                         style = MaterialTheme.typography.titleMedium,
                         color = if (streak > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
@@ -125,7 +127,7 @@ private fun GuessingContent(square: Square, onAnswer: (SquareColor) -> Unit) {
                 modifier = Modifier.weight(1f).height(70.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
-            ) { Text("WHITE", fontWeight = FontWeight.Black, fontSize = 18.sp) }
+            ) { Text(stringResource(R.string.sc_white), fontWeight = FontWeight.Black, fontSize = 18.sp) } // <-- ЗАМЕНА
 
             Button(
                 onClick = { onAnswer(SquareColor.BLACK) },
@@ -133,7 +135,7 @@ private fun GuessingContent(square: Square, onAnswer: (SquareColor) -> Unit) {
                 border = BorderStroke(2.dp, Color.White),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black, contentColor = Color.White),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
-            ) { Text("BLACK", fontWeight = FontWeight.Black, fontSize = 18.sp) }
+            ) { Text(stringResource(R.string.sc_black), fontWeight = FontWeight.Black, fontSize = 18.sp) } // <-- ЗАМЕНА
         }
     }
 }
@@ -153,9 +155,10 @@ private fun ResultContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = if (isCorrect) "SUCCESS" else "FAILURE",
+            text = if (isCorrect) stringResource(R.string.sc_success) else stringResource(R.string.sc_failure),
             color = if (isCorrect) Color(0xFF2E7D32) else Color(0xFFC62828),
-            fontSize = 40.sp, fontWeight = FontWeight.Black
+            fontSize = 40.sp,
+            fontWeight = FontWeight.Black
         )
         Spacer(Modifier.height(24.dp))
 
@@ -174,16 +177,16 @@ private fun ResultContent(
         }
         Spacer(Modifier.height(32.dp))
         Button(onClick = onContinue, modifier = Modifier.fillMaxWidth(0.9f).height(60.dp)) {
-            Text("CONTINUE", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.next), fontSize = 20.sp, fontWeight = FontWeight.Bold) // <-- ЗАМЕНА (CONTINUE -> NEXT)
         }
         Spacer(Modifier.height(12.dp))
 
         OutlinedButton(
-            onClick = onFinish, // Теперь просто вызываем переданный колбэк
+            onClick = onFinish,
             modifier = Modifier.fillMaxWidth(0.9f).height(56.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
         ) {
-            Text("FINISH SESSION", fontSize = 16.sp, color = MaterialTheme.colorScheme.outline)
+            Text(stringResource(R.string.back).uppercase(), fontSize = 16.sp, color = MaterialTheme.colorScheme.outline) // <-- ЗАМЕНА (FINISH SESSION -> BACK)
         }
         Spacer(Modifier.height(24.dp))
     }
